@@ -1,4 +1,6 @@
-class enemie
+#include "airplane.h"
+
+class enemie : public airplane
 {
 private:
     /* data */

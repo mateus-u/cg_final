@@ -1,4 +1,6 @@
-class player
+#include "airplane.h"
+
+class player : public airplane
 {
 private:
     /* data */
