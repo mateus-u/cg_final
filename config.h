@@ -1,8 +1,20 @@
+#include "forms.h"
+#include <vector>
+
+using namespace std;
+
 class config
 {
 private:
-    /* data */
+    vector<circle*> circles;
+    vector<line*> lines;
+
 public:
-    config(/* args */) {}
-    ~config() {}
+    config();
+    ~config();
+
+    void addCircle(circle *circ);
+    void addLine(line *li);
+
+    void display();
 };

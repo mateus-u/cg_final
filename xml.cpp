@@ -3,12 +3,12 @@
 xml::xml()
 {
 
-  this->arena = new Arena();
+  this->arena_config = new config();
 }
 xml::~xml()
 {
 
-  delete this->arena;
+  delete this->arena_config;
 }
 
 void xml::readXML(char *caminho_config)
@@ -53,7 +53,7 @@ void xml::readXML(char *caminho_config)
   this->caminho_arena = caminho + "/" + nome + '.' + tipo;
 }
 
-Arena *xml::readSVG()
+config *xml::readSVG()
 {
 
   string fill, str;
@@ -90,9 +90,9 @@ Arena *xml::readSVG()
 
       fill = inputFiles->Attribute("fill");
 
-      Circulo *circ = new Circulo(cx, cy, raio, fill);
+      circle *circ = new circle(cx, cy, raio, fill);
 
-      this->arena->addCirculo(circ);
+      this->arena_config->addCircle(circ);
       
     }
     else
@@ -114,15 +114,15 @@ Arena *xml::readSVG()
 
         str = inputFiles->Attribute("style");
         
-        Linha* li = new Linha(x1, y1, x2, y2, str);
-        
-        this->arena->addLinha(li);
+        line* li = new line(x1, y1, x2, y2, str);
+
+        this->arena_config->addLine(li);
 
       }
     }
     inputFiles = inputFiles->NextSiblingElement();
   }
 
-  return this->arena;
+  return this->arena_config;
 
 }

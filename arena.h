@@ -6,11 +6,3 @@ public:
     arena(/* args */);
     ~arena();
 };
-
-arena::arena(/* args */)
-{
-}
-
-arena::~arena()
-{
-}

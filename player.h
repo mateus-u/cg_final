@@ -6,11 +6,3 @@ public:
     player(/* args */);
     ~player();
 };
-
-player::player(/* args */)
-{
-}
-
-player::~player()
-{
-}

@@ -15,7 +15,7 @@ private:
     string caminho_arena;
     double vel_jogador;
     double vel_tiro;
-    Config* arena;
+    config* arena_config;
 
 public:
 
@@ -23,7 +23,7 @@ public:
     ~xml();
 
     void readXML(char* caminho);
-    Config* readSVG();
+    config* readSVG();
 
 };
 
