@@ -51,6 +51,14 @@ void keyPress(unsigned char key, int x, int y)
         key_status[(int)('d')] = true;
         break;
 
+    case ('w' | 'W'):
+        key_status[(int)('w')] = true;
+        break;
+
+    case ('s' | 's'):
+        key_status[(int)('s')] = true;
+        break;
+
     case ('u' | 'U'):
         key_status[(int)('u')] = true;
         break;
@@ -87,6 +95,14 @@ void keyUp(unsigned char key, int x, int y)
         key_status[(int)('d')] = false;
         break;
 
+    case ('w' | 'W'):
+        key_status[(int)('w')] = false;
+        break;
+
+    case ('s' | 's'):
+        key_status[(int)('s')] = false;
+        break;
+
     case ('+'):
         key_status[(int)('+')] = false;
         break;
@@ -121,10 +137,7 @@ void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glLoadIdentity();
-    gluLookAt(500, 500, 800, 500, 500, 0, 1, 0, 0);
-
-    now = glutGet (GLUT_ELAPSED_TIME);
+    now = glutGet(GLUT_ELAPSED_TIME);
     int elapsed = now - previous_time;
     previous_time = now;
 

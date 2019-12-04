@@ -24,6 +24,7 @@ private:
     line* runway;
 
 
+
 public:
     arena(config* arena_config);
     ~arena();

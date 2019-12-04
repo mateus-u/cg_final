@@ -20,7 +20,6 @@ protected:
 
     double position[3] = {0};
     double foward[3] = {0};
-    double up[3] = {0};
 
     double radius;
     double speed = 1;
@@ -32,6 +31,14 @@ public:
     void set_foward(double x, double y, double z);
     void display();
     void move(int elapsed_time);
+    void left();
+    void right();
+    double *get_position();
+    double *get_foward();
+    void up();
+    void down();
+    void foward_z_0();
+
 };
 
 #endif

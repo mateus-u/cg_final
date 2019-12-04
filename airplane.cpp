@@ -42,15 +42,54 @@ void airplane::move(int elapsed_time)
     position[2] += foward[2] * this->speed * time;
 }
 
+void airplane::left()
+{
+
+    rotate_z(foward, 0.1);
+
+}
+void airplane::right()
+{
+
+    rotate_z(foward, -0.1);
+
+}
+
+void airplane::up(){
+
+    foward[2]+=0.2;
+
+    cout << foward[2] << endl;
+
+}
+
+void airplane::down(){
+
+    foward[2]-=0.2;
+
+    cout << foward[2] << endl;
+
+}
+
+void airplane::foward_z_0(){
+
+    foward[2] = 0;
+}
+
 void airplane::set_foward(double x, double y, double z)
 {
 
-    this->foward[0] = x;
-    this->foward[1] = y;
-    this->foward[2] = z;
+    this->foward[0] = x - position[0];
+    this->foward[1] = y - position[1];
+    this->foward[2] = z - position[2];
 
-    cout << foward[0] << " " << foward[1] << " " << foward[2] << endl;
     normalize(foward);
-    cout << foward[0] << " " << foward[1] << " " << foward[2] << endl;
+}
 
+double *airplane::get_position(){
+    return this->position;
+}
+
+double *airplane::get_foward(){
+    return this->foward;
 }
