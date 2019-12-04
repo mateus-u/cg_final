@@ -12,6 +12,7 @@ airplane::airplane(circle *cir)
     this->position[0] = this->circ->get_centerx();
     this->position[1] = this->circ->get_centery();
     this->radius = this->circ->get_radius();
+
 }
 
 airplane::~airplane()
@@ -33,10 +34,10 @@ void airplane::display()
     glMaterialfv(GL_FRONT, GL_SHININESS, this->mat_shininess);
 
     glTranslated(position[0], position[1], position[2]);
+
     glRotated(-theta_z, 0, 0, 1);
     glRotated(90, 1, 0, 0);
     glutSolidTeapot(radius);
-    //glutSolidSphere(radius, 360, 360);
     glPopMatrix();
 }
 
