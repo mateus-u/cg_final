@@ -6,9 +6,9 @@
 class enemie : public airplane
 {
 private:
-    /* data */
+    circle* circ;
 public:
-    enemie(/* args */);
+    enemie(circle* cir);
     ~enemie();
 };
 

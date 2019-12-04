@@ -7,6 +7,7 @@
 
 #include "xml.h"
 #include "groundbase.h"
+#include "arena.h"
 
 /*Window*/
 int width = 500;
@@ -18,13 +19,86 @@ xml arq;
 config *arena_config;
 /*xml*/
 
-/*Ground Bases*/
-vector<groundbase *> gb;
-/*Ground Bases*/
+/*Arena*/
+arena *game;
+/*Arena*/
 
+/*Keys*/
+bool key_status[256];
+/*Keys*/
+
+/*Time Control*/
+int previous_time;
+int now;
+/*Time Control*/
 /*Testes*/
 
 /*Testes*/
+
+void keyPress(unsigned char key, int x, int y)
+{
+
+    switch (key)
+    {
+    case ('r' | 'R'):
+        key_status[(int)('r')] = true;
+        break;
+
+    case ('a' | 'A'):
+        key_status[(int)('a')] = true;
+        break;
+    case ('d' | 'D'):
+        key_status[(int)('d')] = true;
+        break;
+
+    case ('u' | 'U'):
+        key_status[(int)('u')] = true;
+        break;
+
+    case ('+'):
+        key_status[(int)('+')] = true;
+        break;
+
+    case ('-'):
+        key_status[(int)('-')] = true;
+        break;
+
+    case 27:     // Termina o programa qdo
+        exit(0); // a tecla ESC for pressionada
+        break;
+    default:
+        break;
+    }
+}
+
+void keyUp(unsigned char key, int x, int y)
+{
+    switch (key)
+    {
+    case ('r' | 'R'):
+        key_status[(int)('r')] = false;
+        break;
+
+    case ('a' | 'A'):
+        key_status[(int)('a')] = false;
+        break;
+
+    case ('d' | 'D'):
+        key_status[(int)('d')] = false;
+        break;
+
+    case ('+'):
+        key_status[(int)('+')] = false;
+        break;
+
+    case ('-'):
+        key_status[(int)('-')] = false;
+        break;
+
+    default:
+        break;
+    }
+}
 
 void idle()
 {
@@ -37,26 +111,24 @@ void reshape(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if (w <= h)
-        gluPerspective(45, (GLfloat)h / (GLfloat)w, 2, 50);
+        gluPerspective(45, (GLfloat)h / (GLfloat)w, 1, 5000);
     else
-        gluPerspective(45, (GLfloat)w / (GLfloat)h, 2, 50);
+        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 }
 
 void display(void)
 {
-    GLfloat position[] = {0.0, 0.00, 0.0, 1.0};
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
-    gluLookAt(5, 5, 40, 5, 5, 0.0, 0.0, 1.0, 0.0);
+    gluLookAt(500, 500, 800, 500, 500, 0, 1, 0, 0);
 
-    arena_config->get_circle(0)->display();
-    gb[0]->display();
-    gb[1]->display();
-    gb[2]->display();
-    gb[3]->display();
-    gb[4]->display();
+    now = glutGet (GLUT_ELAPSED_TIME);
+    int elapsed = now - previous_time;
+    previous_time = now;
+
+    game->display(key_status, elapsed);
 
     glFlush();
 }
@@ -66,6 +138,8 @@ void init(char *namexml)
     arq.readXML(namexml);
     arena_config = arq.readSVG();
 
+    game = new arena(arena_config);
+
     glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
 
@@ -73,11 +147,15 @@ void init(char *namexml)
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
-    gb.push_back(new groundbase(arena_config->get_circle(1)));
-    gb.push_back(new groundbase(arena_config->get_circle(2)));
-    gb.push_back(new groundbase(arena_config->get_circle(3)));
-    gb.push_back(new groundbase(arena_config->get_circle(4)));
-    gb.push_back(new groundbase(arena_config->get_circle(5)));
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluPerspective(45.0,
+                   GLdouble(width / height),
+                   1,
+                   5000);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
 int main(int argc, char **argv)
@@ -94,6 +172,8 @@ int main(int argc, char **argv)
 
     glutDisplayFunc(display);
     glutIdleFunc(idle);
+    glutKeyboardFunc(keyPress);
+    glutKeyboardUpFunc(keyUp);
 
     glutReshapeFunc(reshape);
 

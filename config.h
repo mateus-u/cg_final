@@ -19,7 +19,7 @@ public:
     void addCircle(circle *circ);
     void addLine(line *li);
 
-    circle* get_circle(int i);
+    vector<circle*> get_circles();
     vector<line*> get_lines();
     
     void display();

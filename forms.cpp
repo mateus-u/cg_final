@@ -30,9 +30,11 @@ void forms::set_color(double r, double g, double b)
 
 circle::circle(double cx, double cy, double radius, string color)
 {
-    this->cx = cx/100;
-    this->cy = cy/100;
-    this->r = radius/100;
+    this->cx = cx;
+    this->cy = cy;
+    this->r = radius;
+
+    this->color = color;
 
     double Red, Green, Blue;
 
@@ -100,6 +102,12 @@ void circle::display()
     glEnable(GL_LIGHTING);
 }
 
+string circle::get_color()
+{
+
+    return this->color;
+}
+
 line::line(double x1, double y1, double x2, double y2, string style)
 {
 
@@ -115,25 +123,48 @@ line::line(double x1, double y1, double x2, double y2, string style)
 
 void line::display()
 {
+    glDisable(GL_LIGHTING);
 
-    glLineWidth(5.0);
+    glLineWidth(500.0);
     glBegin(GL_LINES);
 
     glColor3f(R, G, B);
-    glVertex3f(x1, y1, -10);
-    glVertex3f(x2, y2, -10);
+    glVertex3f(x1, y1, 0.03);
+    glVertex3f(x2, y2, 0.03);
 
     glEnd();
+
+    glEnable(GL_LIGHTING);
 }
 
-double circle::get_radius() {
+double line::get_x1()
+{
+    return this->x1;
+}
+double line::get_y1()
+{
+    return this->y1;
+}
+double line::get_x2()
+{
+    return this->x2;
+}
+double line::get_y2()
+{
+    return this->y2;
+}
+
+double circle::get_radius()
+{
     return this->r;
 }
-double circle::get_centerx() {
+double circle::get_centerx()
+{
 
     return this->cx;
 }
-double circle::get_centery() {
+double circle::get_centery()
+{
 
     return this->cy;
 }

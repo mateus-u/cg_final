@@ -34,8 +34,8 @@ void config::display()
     }
 }
 
-circle* config::get_circle(int i){
-    return this->circles[i];
+vector<circle*> config::get_circles(){
+    return this->circles;
 }
 vector<line *> config::get_lines(){
     return this->lines;
