@@ -1,3 +1,6 @@
+#ifndef ENEMIE_H
+#define ENEMIE_H
+
 #include "airplane.h"
 
 class enemie : public airplane
@@ -8,3 +11,5 @@ public:
     enemie(/* args */);
     ~enemie();
 };
+
+#endif

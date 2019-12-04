@@ -1,3 +1,6 @@
+#ifndef FORMS_H
+#define FORMS_H 
+
 #include <string>
 
 using namespace std;
@@ -28,6 +31,9 @@ public:
     circle(double cx, double cy, double r, string cor);
     ~circle() {}
     void display();
+    double get_radius();
+    double get_centerx();
+    double get_centery();
 };
 
 class line : public forms
@@ -43,3 +49,5 @@ public:
     ~line() {}
     void display();
 };
+
+#endif

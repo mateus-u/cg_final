@@ -1,8 +1,21 @@
+#ifndef GROUNDBASE_H
+#define GROUNDBASE_H
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
+
+#include "forms.h"
+
 class groundbase
 {
 private:
-    /* data */
+    circle* circ;
 public:
-    groundbase(/* args */);
+    groundbase(circle* cir);
     ~groundbase();
+
+    void display();
 };
+
+#endif

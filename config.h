@@ -1,3 +1,6 @@
+#ifndef CONFIG_H 
+#define CONFIG_H
+
 #include "forms.h"
 #include <vector>
 
@@ -16,5 +19,10 @@ public:
     void addCircle(circle *circ);
     void addLine(line *li);
 
+    circle* get_circle(int i);
+    vector<line*> get_lines();
+    
     void display();
 };
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef ARENA_H
+#define ARENA_H
 class arena
 {
 private:
@@ -6,3 +8,5 @@ public:
     arena(/* args */);
     ~arena();
 };
+
+#endif

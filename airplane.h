@@ -1,3 +1,6 @@
+#ifndef AIRPLANE_H
+#define AIRPLANE_H
+
 class airplane
 {
 private:
@@ -6,3 +9,5 @@ public:
     airplane(/* args */);
     ~airplane();
 };
+
+#endif

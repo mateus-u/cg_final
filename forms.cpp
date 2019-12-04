@@ -20,7 +20,8 @@ forms::~forms()
 {
 }
 
-void forms::set_color(double r, double g, double b){
+void forms::set_color(double r, double g, double b)
+{
 
     this->R = r;
     this->G = g;
@@ -29,16 +30,15 @@ void forms::set_color(double r, double g, double b){
 
 circle::circle(double cx, double cy, double radius, string color)
 {
-    this->cx = cx;
-    this->cy = cy;
-    this->r = radius;
+    this->cx = cx/100;
+    this->cy = cy/100;
+    this->r = radius/100;
 
-    double r, g, b;
+    double Red, Green, Blue;
 
-    string2rgb(color, &r, &g, &b);
+    string2rgb(color, &Red, &Green, &Blue);
 
-    set_color(r, g, b);
-
+    set_color(Red, Green, Blue);
 }
 
 void circle::string2rgb(string color, double *r, double *g, double *b)
@@ -85,9 +85,9 @@ void circle::string2rgb(string color, double *r, double *g, double *b)
 
 void circle::display()
 {
-
     int i;
     GLfloat x, y;
+    glDisable(GL_LIGHTING);
     glColor3f(R, G, B);
     glBegin(GL_POLYGON);
     for (i = 0; i < 360; i += 1)
@@ -97,6 +97,7 @@ void circle::display()
         glVertex3f(x, y, 0);
     }
     glEnd();
+    glEnable(GL_LIGHTING);
 }
 
 line::line(double x1, double y1, double x2, double y2, string style)
@@ -123,4 +124,16 @@ void line::display()
     glVertex3f(x2, y2, -10);
 
     glEnd();
+}
+
+double circle::get_radius() {
+    return this->r;
+}
+double circle::get_centerx() {
+
+    return this->cx;
+}
+double circle::get_centery() {
+
+    return this->cy;
 }
