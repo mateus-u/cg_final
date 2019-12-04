@@ -19,10 +19,14 @@ protected:
     GLfloat mat_shininess[5] = {0};
 
     double position[3] = {0};
-    double foward[3] = {0};
+    double foward[3] = {1,1,1};
 
     double radius;
     double speed = 1;
+
+    double theta_x = 0;
+    double theta_y = 0;
+    double theta_z = 0;
 
 public:
     airplane(circle *cir);

@@ -20,7 +20,12 @@ airplane::~airplane()
 
 void airplane::display()
 {
+    double x_axys[3] = {1, 0, 0};
 
+    if (foward[1] < 0)
+        theta_z = angle_2_vector(x_axys, this->foward);
+    else
+        theta_z = 360 - angle_2_vector(x_axys, this->foward);
     glPushMatrix();
     glMaterialfv(GL_FRONT, GL_EMISSION, this->materialEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->materialColor);
@@ -28,7 +33,10 @@ void airplane::display()
     glMaterialfv(GL_FRONT, GL_SHININESS, this->mat_shininess);
 
     glTranslated(position[0], position[1], position[2]);
-    glutSolidSphere(radius, 360, 360);
+    glRotated(-theta_z, 0, 0, 1);
+    glRotated(90, 1, 0, 0);
+    glutSolidTeapot(radius);
+    //glutSolidSphere(radius, 360, 360);
     glPopMatrix();
 }
 
@@ -45,33 +53,28 @@ void airplane::move(int elapsed_time)
 void airplane::left()
 {
 
-    rotate_z(foward, 0.1);
-
+    rotate_z(foward, 0.04);
 }
 void airplane::right()
 {
 
-    rotate_z(foward, -0.1);
-
+    rotate_z(foward, -0.04);
 }
 
-void airplane::up(){
+void airplane::up()
+{
 
-    foward[2]+=0.2;
-
-    cout << foward[2] << endl;
-
+    foward[2] = 0.3;
 }
 
-void airplane::down(){
+void airplane::down()
+{
 
-    foward[2]-=0.2;
-
-    cout << foward[2] << endl;
-
+    foward[2] = -0.3;
 }
 
-void airplane::foward_z_0(){
+void airplane::foward_z_0()
+{
 
     foward[2] = 0;
 }
@@ -86,10 +89,12 @@ void airplane::set_foward(double x, double y, double z)
     normalize(foward);
 }
 
-double *airplane::get_position(){
+double *airplane::get_position()
+{
     return this->position;
 }
 
-double *airplane::get_foward(){
+double *airplane::get_foward()
+{
     return this->foward;
 }
