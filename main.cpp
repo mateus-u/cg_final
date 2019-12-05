@@ -166,7 +166,7 @@ void init(char *namexml)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, GLdouble(width / height), 1, 5000);
+    gluPerspective(60.0, GLdouble(width / height), 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -175,7 +175,7 @@ int main(int argc, char **argv)
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
-    glutInitWindowPosition(100, 100);
+    glutInitWindowPosition(20000, 100);
     glutCreateWindow("Trabalho Final");
 
     /*Init*/

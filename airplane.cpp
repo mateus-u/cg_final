@@ -129,16 +129,16 @@ void airplane::display()
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
 
-    cout << vx[0].size() << " " << nx[0].size() << " " << tx[0].size() << endl;
-
     for (int i = 0; i < 1; i++)
     {
 
         for (int j = 0; j < vx[i].size(); j++)
         {
-            glVertex3f(vx[i][j], vy[i][j], vz[i][j]);
-            glNormal3f(nx[i][j], ny[i][j], nz[i][j]);
             glTexCoord2f(tx[i][j], ty[i][j]);
+            glNormal3f(nx[i][j], ny[i][j], nz[i][j]);
+            glVertex3f(vx[i][j], vy[i][j], vz[i][j]);
+            
+            
         }
     }
     glEnd();
@@ -198,7 +198,11 @@ void airplane::up()
 
 void airplane::down()
 {
+    
     foward[2] = -0.3;
+    if(position[2] < 0){
+      foward[2] = 0.0; 
+    }
 }
 
 void airplane::foward_z_0()
