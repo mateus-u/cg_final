@@ -24,20 +24,20 @@ arena *game;
 /*Arena*/
 
 /*Keys*/
-bool key_status[256];
+bool key_status[256] = {false};
 /*Keys*/
 
 /*Time Control*/
 int previous_time;
 int now;
 /*Time Control*/
+
 /*Testes*/
 
 /*Testes*/
 
 void keyPress(unsigned char key, int x, int y)
 {
-
     switch (key)
     {
     case ('r' | 'R'):
@@ -137,9 +137,11 @@ void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    /*time control*/
     now = glutGet(GLUT_ELAPSED_TIME);
     int elapsed = now - previous_time;
     previous_time = now;
+    /*time control*/
 
     game->display(key_status, elapsed);
 
@@ -150,7 +152,6 @@ void init(char *namexml)
 {
     arq.readXML(namexml);
     arena_config = arq.readSVG();
-
     game = new arena(arena_config);
 
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -162,37 +163,30 @@ void init(char *namexml)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
-    gluPerspective(45.0,
-                   GLdouble(width / height),
-                   1,
-                   5000);
-
+    gluPerspective(45.0, GLdouble(width / height), 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 }
 
 int main(int argc, char **argv)
 {
-
-    /*OpenGl*/
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Trabalho Final");
 
+    /*Init*/
     init(argv[1]);
-
+    /*Init*/
+    
+    /*CallBack*/
     glutDisplayFunc(display);
     glutIdleFunc(idle);
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
-
     glutReshapeFunc(reshape);
+    /*CallBack*/
 
     glutMainLoop();
-
-    /*OpenGl*/
-
     return 0;
 }

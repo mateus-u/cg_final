@@ -14,7 +14,6 @@ private:
 public:
     groundbase(circle* cir);
     ~groundbase();
-
     void display();
 };
 

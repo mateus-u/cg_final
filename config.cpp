@@ -22,7 +22,6 @@ void config::addLine(line *li)
 
 void config::display()
 {
-
     for (int i = 0; i < circles.size(); i++)
     {
         circles[i]->display();

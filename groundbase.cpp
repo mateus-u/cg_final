@@ -14,8 +14,6 @@ groundbase::~groundbase()
 
 void groundbase::display()
 {
-
-
     glPushMatrix();
         GLfloat materialEmission[] = {0.4, 0.5, 0.6, 1};
         GLfloat materialColor[] = {0.5, 0.5, 0.5, 1};

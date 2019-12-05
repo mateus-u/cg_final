@@ -15,13 +15,10 @@ private:
 public:
     config();
     ~config();
-
     void addCircle(circle *circ);
     void addLine(line *li);
-
     vector<circle*> get_circles();
     vector<line*> get_lines();
-    
     void display();
 };
 

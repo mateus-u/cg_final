@@ -36,11 +36,9 @@ arena::arena(config *arena_config)
     }
 
     this->runway = arena_config->get_lines()[0];
-
     this->center[0] = ground->get_centerx();
     this->center[1] = ground->get_centery();
     this->center[2] = 0;
-
     this->radius = ground->get_radius();
 }
 
@@ -50,7 +48,6 @@ arena::~arena()
 
 double dist(double *p1, double *p2)
 {
-
     double p[3];
 
     p[0] = p1[0] - p2[0];
@@ -75,9 +72,7 @@ void arena::display(bool *key_status, int elapsed_time)
     this->player1->display();
 
     if (dist(player_pos, center) > this->radius){
-
         player1->teleport(this->radius);
-    
     }
 
     if (key_status['u'])
@@ -99,31 +94,26 @@ void arena::display(bool *key_status, int elapsed_time)
 
     if (key_status['w'])
     {
-
         player1->up();
     }
 
     else if (key_status['s'])
     {
-
         player1->down();
     }
 
     else
     {
-
         player1->foward_z_0();
     }
 
     for (int i = 0; i < this->gBases.size(); i++)
     {
-
         this->gBases[i]->display();
     }
 
     for (int i = 0; i < this->enemies.size(); i++)
     {
-
         this->enemies[i]->display();
     }
 }

@@ -23,7 +23,6 @@ protected:
 
     double radius;
     double speed = 1;
-
     double theta_x = 0;
     double theta_y = 0;
     double theta_z = 0;
@@ -31,7 +30,6 @@ protected:
 public:
     airplane(circle *cir);
     ~airplane();
-
     void set_foward(double x, double y, double z);
     void display();
     void move(int elapsed_time);
@@ -43,7 +41,6 @@ public:
     void down();
     void foward_z_0();
     void teleport(double radius);
-
 };
 
 #endif

@@ -5,6 +5,7 @@
 
 class enemie : public airplane
 {
+
 private:
     circle* circ;
 public:

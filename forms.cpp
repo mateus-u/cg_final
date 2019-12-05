@@ -22,7 +22,6 @@ forms::~forms()
 
 void forms::set_color(double r, double g, double b)
 {
-
     this->R = r;
     this->G = g;
     this->B = b;
@@ -35,11 +34,8 @@ circle::circle(double cx, double cy, double radius, string color)
     this->r = radius;
 
     this->color = color;
-
     double Red, Green, Blue;
-
     string2rgb(color, &Red, &Green, &Blue);
-
     set_color(Red, Green, Blue);
 }
 
@@ -55,7 +51,6 @@ void circle::string2rgb(string color, double *r, double *g, double *b)
 
     else if (color == "red")
     {
-
         *r = 1.0;
         *g = 0.0;
         *b = 0.0;
@@ -63,7 +58,6 @@ void circle::string2rgb(string color, double *r, double *g, double *b)
 
     else if (color == "orange")
     {
-
         *r = 1.0;
         *g = 0.6;
         *b = 0.0;
@@ -71,14 +65,12 @@ void circle::string2rgb(string color, double *r, double *g, double *b)
 
     else if (color == "green")
     {
-
         *r = 0.0;
         *g = 1.0;
         *b = 0.0;
     }
     else
     {
-
         *r = 1.0;
         *g = 1.0;
         *b = 1.0;

@@ -2,7 +2,6 @@
 
 player::player(circle* cir) : airplane(cir)
 {
-
     this->materialEmission[0] = 0.5;
     this->materialEmission[1] = 0.5;
     this->materialEmission[2] = 0.5;

@@ -15,7 +15,6 @@ using namespace std;
 class arena
 {
 private:
-    
     player* player1;
     vector<enemie*> enemies;
     vector<groundbase*> gBases;

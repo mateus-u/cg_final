@@ -25,7 +25,6 @@ private:
     double cy;
     double r;
     string color;
-
     void string2rgb(string cor, double *r, double *g, double *b);
 
 public:

@@ -1,4 +1,4 @@
-/*
+/**
 www.sourceforge.net/projects/tinyxml
 Original code by Lee Thomason (www.grinninglizard.com)
 
@@ -36,7 +36,6 @@ distribution.
 #		define TIXML_LOG printf
 #	endif
 #endif
-
 // Note tha "PutString" hardcodes the same list. This
 // is less flexible than it appears. Changing the entries
 // or order will break putstring.	

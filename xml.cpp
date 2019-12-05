@@ -2,12 +2,10 @@
 
 xml::xml()
 {
-
   this->arena_config = new config();
 }
 xml::~xml()
 {
-
   delete this->arena_config;
 }
 
@@ -43,19 +41,16 @@ void xml::readXML(char *caminho_config)
     str = inputFiles->Attribute("vel");
     this->vel_jogador = atof(str.c_str());
   }
-
   if (inputFiles->Attribute("velTiro"))
   {
     str = inputFiles->Attribute("velTiro");
     this->vel_tiro = atof(str.c_str());
   }
-
   this->caminho_arena = caminho + "/" + nome + '.' + tipo;
 }
 
 config *xml::readSVG()
 {
-
   string fill, str;
   double cx, cy, raio, x1, x2, y1, y2;
   int id;
@@ -73,7 +68,6 @@ config *xml::readSVG()
 
   while (inputFiles)
   {
-
     if (inputFiles->Attribute("cx"))
     {
       str = inputFiles->Attribute("cx");
@@ -117,10 +111,11 @@ config *xml::readSVG()
         line* li = new line(x1, y1, x2, y2, str);
 
         this->arena_config->addLine(li);
-
       }
     }
+    
     inputFiles = inputFiles->NextSiblingElement();
+  
   }
 
   return this->arena_config;
