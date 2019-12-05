@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "forms.h"
-#include "airplane.h"
 #include "player.h"
 #include "enemie.h"
 #include "groundbase.h"
@@ -23,7 +22,8 @@ private:
     circle* ground;
     line* runway;
 
-
+    double center[3];
+    double radius;
 
 public:
     arena(config* arena_config);

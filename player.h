@@ -5,7 +5,7 @@
 class player : public airplane
 {
 private:
-    /* data */
+
 public:
     player(circle* cir);
     ~player();

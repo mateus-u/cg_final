@@ -27,7 +27,7 @@ protected:
     double theta_x = 0;
     double theta_y = 0;
     double theta_z = 0;
-
+    
 public:
     airplane(circle *cir);
     ~airplane();
@@ -42,6 +42,7 @@ public:
     void up();
     void down();
     void foward_z_0();
+    void teleport(double radius);
 
 };
 

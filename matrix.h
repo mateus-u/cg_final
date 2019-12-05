@@ -1,5 +1,9 @@
+#ifndef MATRIX_H
+#define MATRIX_H
+
 #include <math.h>
 #include <iostream>
+
 using namespace std;
 
 void normalize(double *vector)
@@ -72,3 +76,5 @@ double angle_2_vector(double *a, double *b)
 
     return angle;
 }
+
+#endif

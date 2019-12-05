@@ -12,7 +12,6 @@ airplane::airplane(circle *cir)
     this->position[0] = this->circ->get_centerx();
     this->position[1] = this->circ->get_centery();
     this->radius = this->circ->get_radius();
-
 }
 
 airplane::~airplane()
@@ -27,17 +26,19 @@ void airplane::display()
         theta_z = angle_2_vector(x_axys, this->foward);
     else
         theta_z = 360 - angle_2_vector(x_axys, this->foward);
+
     glPushMatrix();
+
     glMaterialfv(GL_FRONT, GL_EMISSION, this->materialEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->materialColor);
     glMaterialfv(GL_FRONT, GL_SPECULAR, this->mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, this->mat_shininess);
 
     glTranslated(position[0], position[1], position[2]);
-
     glRotated(-theta_z, 0, 0, 1);
     glRotated(90, 1, 0, 0);
     glutSolidTeapot(radius);
+
     glPopMatrix();
 }
 
@@ -56,6 +57,7 @@ void airplane::left()
 
     rotate_z(foward, 0.04);
 }
+
 void airplane::right()
 {
 
@@ -98,4 +100,9 @@ double *airplane::get_position()
 double *airplane::get_foward()
 {
     return this->foward;
+}
+
+void airplane::teleport(double radius)
+{
+    
 }

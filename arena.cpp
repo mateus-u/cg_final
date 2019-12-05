@@ -1,4 +1,5 @@
 #include "arena.h"
+#include "math.h"
 
 #include <iostream>
 using namespace std;
@@ -35,18 +36,37 @@ arena::arena(config *arena_config)
     }
 
     this->runway = arena_config->get_lines()[0];
+
+    this->center[0] = ground->get_centerx();
+    this->center[1] = ground->get_centery();
+    this->center[2] = 0;
+
+    this->radius = ground->get_radius();
 }
 
 arena::~arena()
 {
 }
 
+double dist(double *p1, double *p2)
+{
+
+    double p[3];
+
+    p[0] = p1[0] - p2[0];
+    p[1] = p1[1] - p2[1];
+    p[2] = p1[2] - p2[2];
+
+    return sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2]);
+}
+
 void arena::display(bool *key_status, int elapsed_time)
 {
-    double* player_pos = player1->get_position();
-    double* player_fow = player1->get_foward();
+    double *player_pos = player1->get_position();
+    double *player_fow = player1->get_foward();
+
     glLoadIdentity();
-    gluLookAt(player_pos[0] - 50 * player_fow[0], player_pos[1] - 50 * player_fow[1] , player_pos[2] + 15, player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
+    gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25, player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
 
     this->ground->display();
 
@@ -54,31 +74,43 @@ void arena::display(bool *key_status, int elapsed_time)
 
     this->player1->display();
 
-    if (key_status['u'])
-        player1->move(elapsed_time);
+    if (dist(player_pos, center) > this->radius){
 
-    if (key_status['a']){
+        player1->teleport(this->radius);
+    
+    }
+
+    if (key_status['u'])
+    {
+        player1->move(elapsed_time);
+    }
+
+    if (key_status['a'])
+    {
         player1->left();
         player1->foward_z_0();
     }
-        
 
-    if (key_status['d']){
+    else if (key_status['d'])
+    {
         player1->right();
         player1->foward_z_0();
     }
 
-    if (key_status['w']){
-        
+    if (key_status['w'])
+    {
+
         player1->up();
     }
-        
-    else if (key_status['s']){
-        
+
+    else if (key_status['s'])
+    {
+
         player1->down();
     }
 
-    else{
+    else
+    {
 
         player1->foward_z_0();
     }
