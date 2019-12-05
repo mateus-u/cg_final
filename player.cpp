@@ -17,7 +17,7 @@ player::player(circle* cir) : airplane(cir)
     this->mat_specular[2] = 0.6;
     this->mat_specular[3] = 1.0;
 
-    this->mat_shininess[0] = 5.0;
+    this->mat_shininess[0] = 50.0;
 
     this->position[2] = 0;
 

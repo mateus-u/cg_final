@@ -161,6 +161,9 @@ void init(char *namexml)
     glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
+    glEnable(GL_TEXTURE_2D);
+    glDepthFunc(GL_LEQUAL);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(45.0, GLdouble(width / height), 1, 5000);

@@ -35,6 +35,7 @@ public:
     double get_centerx();
     double get_centery();
     string get_color();
+    void set_radius(double radius);
 };
 
 class line : public forms

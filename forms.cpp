@@ -160,3 +160,7 @@ double circle::get_centery()
 
     return this->cy;
 }
+
+void circle::set_radius(double radius){
+    this->r = radius;
+}

@@ -29,7 +29,7 @@ arena::arena(config *arena_config)
 
         if (arena_config->get_circles()[i]->get_color() == "green")
         {
-
+            arena_config->get_circles()[i]->set_radius(arena_config->get_circles()[i]->get_radius() * 2);
             this->player1 = new player(arena_config->get_circles()[i]);
             this->player1->set_foward(arena_config->get_lines()[0]->get_x2(), arena_config->get_lines()[0]->get_y2(), 0);
         }
