@@ -77,21 +77,40 @@ void circle::string2rgb(string color, double *r, double *g, double *b)
     }
 }
 
-void circle::display()
+void circle::display(double z, int text, int pos_normal)
 {
     int i;
     GLfloat x, y;
-    glDisable(GL_LIGHTING);
-    glColor3f(R, G, B);
+
+    GLfloat materialEmission[] = {0.4, 0.4, 0.4, 1};
+    GLfloat materialColorA[] = {0.0, 0.8, 0.0, 1};
+    GLfloat materialColorD[] = {0.0, 0.8, 0.0, 1};
+    GLfloat mat_specular[] = {0.9, 0.9, 0.9, 1};
+    GLfloat mat_shininess[] = {100.0};
+
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, text);
     glBegin(GL_POLYGON);
+    
+    int t = 1;
+    
     for (i = 0; i < 360; i += 1)
     {
-        x = cx + r * cos(M_PI * i / 180);
-        y = cy + r * sin(M_PI * i / 180);
-        glVertex3f(x, y, 0);
+        x = cx + t * r * cos(M_PI * i / 180);
+        y = cy + t * r * sin(M_PI * i / 180);
+        glNormal3d(x, y, z + 2);
+        glTexCoord2d(x, y);
+        glVertex3f(x, y, z);
     }
     glEnd();
-    glEnable(GL_LIGHTING);
 }
 
 string circle::get_color()
@@ -161,6 +180,7 @@ double circle::get_centery()
     return this->cy;
 }
 
-void circle::set_radius(double radius){
+void circle::set_radius(double radius)
+{
     this->r = radius;
 }

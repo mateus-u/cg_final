@@ -6,6 +6,11 @@ using namespace std;
 groundbase::groundbase(circle *cir)
 {
     this->circ = cir;
+
+    this->position[0] = cir->get_centerx();
+    this->position[1] = cir->get_centery();
+    this->position[2] = 0;
+
 }
 
 groundbase::~groundbase()
@@ -15,10 +20,10 @@ groundbase::~groundbase()
 void groundbase::display()
 {
     glPushMatrix();
-        GLfloat materialEmission[] = {0.4, 0.5, 0.6, 1};
-        GLfloat materialColor[] = {0.5, 0.5, 0.5, 1};
-        GLfloat mat_specular[] = {0.5, 0.5, 0.5, 1};
-        GLfloat mat_shininess[] = {5.0};
+        GLfloat materialEmission[] = {0.5, 0.5, 0.05, 1};
+        GLfloat materialColor[] = {0.3, 0.3, 0.3, 1};
+        GLfloat mat_specular[] = {0.9, 0.9, 0.9, 1};
+        GLfloat mat_shininess[] = {50.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
         glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, materialColor);
         glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -27,5 +32,17 @@ void groundbase::display()
         glTranslated(this->circ->get_centerx(), this->circ->get_centery(), 0);
         glutSolidSphere(this->circ->get_radius(), 360, 360);
     glPopMatrix();
+
+}
+
+double* groundbase::get_position(){
+
+    return this->position;
+
+}
+
+double groundbase::get_radius(){
+
+    return this->circ->get_radius();
 
 }

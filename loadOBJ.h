@@ -44,11 +44,37 @@ public:
     }
 };
 
+class polygon
+{
+
+public:
+
+    polygon();
+    ~polygon();
+
+    int v;
+    int n;
+    int t;
+};
+
+polygon::polygon()
+{
+}
+
+polygon::~polygon()
+{
+}
+
+
+
 class obj
 {
 
 public:
     vector<mesh *> meshes;
+    vector<polygon*> poly;
+    int polygon_faces = 4;
+
     int mesh_count = 0;
     obj()
     {
@@ -81,6 +107,45 @@ public:
                 count++;
                 meshes.push_back(new mesh());
                 prox = true;
+            }
+
+            if(data[0] == 'f'){
+
+                int v[4];
+                int n[4];
+                int t[4];
+
+                fscanf(objFILE, "%d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d", &v[0], &n[0], &t[0], &v[1], &n[1], &t[1], &v[2], &n[2], &t[2],&v[3], &n[3], &t[3]);
+
+                polygon* p1 = new polygon();
+                polygon* p2 = new polygon();
+                polygon* p3 = new polygon();
+                polygon* p4 = new polygon();
+
+                p1->v = v[0];
+                p1->n = n[0];
+                p1->t = v[0];
+                
+                p2->v = v[1];
+                p2->n = n[1];
+                p2->t = v[1];
+                
+                p3->v = v[2];
+                p3->n = n[2];
+                p3->t = v[2];
+
+                p4->v = v[3];
+                p4->n = n[3];
+                p4->t = v[3];
+            
+                poly.push_back(p1);
+                poly.push_back(p2);
+                poly.push_back(p3);
+                poly.push_back(p4);
+
+
+
+                
             }
             double x, y, z;
 
@@ -118,6 +183,8 @@ public:
         }
 
         mesh_count = count + 1;
+
+        cout << poly.back()->v << endl;
     }
 };
 

@@ -11,10 +11,14 @@ class groundbase
 {
 private:
     circle* circ;
+    double position[3] = {};
+
 public:
     groundbase(circle* cir);
     ~groundbase();
     void display();
+    double* get_position();
+    double get_radius();
 };
 
 #endif

@@ -2,14 +2,14 @@
 #include "matrix.h"
 #include "loadOBJ.h"
 #include "imageloader.h"
-
+#include "loadTexture.h"
 #include <iostream>
 
 using namespace std;
 
 void load_obj();
-GLuint LoadTextureRAW(const char *nome);
-GLuint texture = 0;
+GLuint texture_plane = 0;
+obj *ob = new obj();
 
 airplane::airplane(circle *cir)
 {
@@ -19,7 +19,7 @@ airplane::airplane(circle *cir)
     this->radius = this->circ->get_radius();
 
     load_obj();
-    texture = LoadTextureRAW("model/plane.bmp");
+    texture_plane = LoadTextureRAW("model/plane.bmp");
 }
 
 airplane::~airplane()
@@ -28,76 +28,10 @@ airplane::~airplane()
 
 /*TESTES*/
 
-GLuint LoadTextureRAW(const char *filename)
-{
-
-    GLuint texture;
-
-    Image *image = loadBMP(filename);
-
-    cout << image->width << endl;
-
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D,               //Always GL_TEXTURE_2D
-                 0,                           //0 for now
-                 GL_RGB,                      //Format OpenGL uses for image
-                 image->width, image->height, //Width and height
-                 0,                           //The border of the image
-                 GL_RGB,                      //GL_RGB, because pixels are stored in RGB format
-                 GL_UNSIGNED_BYTE,            //GL_UNSIGNED_BYTE, because pixels are stored
-                                              //as unsigned numbers
-                 image->pixels);              //The actual pixel data
-    delete image;
-
-    return texture;
-}
-
-vector<float> vx[200];
-vector<float> vy[200];
-vector<float> vz[200];
-vector<float> nx[200];
-vector<float> ny[200];
-vector<float> nz[200];
-vector<float> tx[200];
-vector<float> ty[200];
-vector<float> tz[200];
-int tam;
-
 void load_obj()
 {
-
-    obj *ob = new obj();
     char name[50] = "model/plane.obj";
     ob->load(name);
-
-    tam = ob->mesh_count;
-
-    for (int i = 0; i < tam; i++)
-    {
-        for (int j = 0; j < ob->meshes[i]->v.size(); j++)
-        {
-
-            vx[i].push_back(ob->meshes[i]->v[j]->x);
-            vy[i].push_back(ob->meshes[i]->v[j]->y);
-            vz[i].push_back(ob->meshes[i]->v[j]->z);
-        }
-        for (int j = 0; j < ob->meshes[i]->vn.size(); j++)
-        {
-            nx[i].push_back(ob->meshes[i]->vn[j]->x);
-            ny[i].push_back(ob->meshes[i]->vn[j]->y);
-            nz[i].push_back(ob->meshes[i]->vn[j]->z);
-        }
-
-        for (int j = 0; j < ob->meshes[i]->vt.size(); j++)
-        {
-            tx[i].push_back(ob->meshes[i]->vt[j]->x);
-            ty[i].push_back(ob->meshes[i]->vt[j]->y);
-        }
-    }
 }
 
 void airplane::display()
@@ -121,57 +55,47 @@ void airplane::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTranslated(position[0], position[1], position[2]);
-    //glutSolidSphere(this->circ->get_radius() * 2, 360, 360);
+    //glutSolidSphere(this->circ->get_radius(), 360, 360);
     glRotated(180, 0, 0, 1);
     glRotated(-theta_z, 0, 0, 1);
-    glScaled(this->circ->get_radius() / 3, this->circ->get_radius() / 3, this->circ->get_radius() / 3);
 
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glBegin(GL_QUADS);
+    int a = 3;
+    glScaled(this->circ->get_radius() / a, this->circ->get_radius() / a, this->circ->get_radius() / a);
 
-    for (int i = 0; i < 1; i++)
+    glBindTexture(GL_TEXTURE_2D, texture_plane);
+
+    for (int i = 0; i < ob->poly.size(); i += 4)
     {
+        glBegin(GL_QUADS);
 
-        for (int j = 0; j < vx[i].size(); j++)
-        {
-            glTexCoord2f(tx[i][j], ty[i][j]);
-            glNormal3f(nx[i][j], ny[i][j], nz[i][j]);
-            glVertex3f(vx[i][j], vy[i][j], vz[i][j]);
-            
-            
-        }
+        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i]->t]->x, ob->meshes[0]->vt[ob->poly[i]->t]->y);
+        glNormal3f(ob->meshes[0]->vn[ob->poly[i]->n]->x, ob->meshes[0]->vn[ob->poly[i]->n]->y, ob->meshes[0]->vn[ob->poly[i]->n]->z);
+        glVertex3f(ob->meshes[0]->v[ob->poly[i]->v]->x, ob->meshes[0]->v[ob->poly[i]->v]->y, ob->meshes[0]->v[ob->poly[i]->v]->z);
+
+        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i + 1]->t]->x, ob->meshes[0]->vt[ob->poly[i + 1]->t]->y);
+        glNormal3f(ob->meshes[0]->vn[ob->poly[i + 1]->n]->x, ob->meshes[0]->vn[ob->poly[i + 1]->n]->y, ob->meshes[0]->vn[ob->poly[i + 1]->n]->z);
+        glVertex3f(ob->meshes[0]->v[ob->poly[i + 1]->v]->x, ob->meshes[0]->v[ob->poly[i + 1]->v]->y, ob->meshes[0]->v[ob->poly[i + 1]->v]->z);
+
+        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i + 2]->t]->x, ob->meshes[0]->vt[ob->poly[i + 2]->t]->y);
+        glNormal3f(ob->meshes[0]->vn[ob->poly[i + 2]->n]->x, ob->meshes[0]->vn[ob->poly[i + 2]->n]->y, ob->meshes[0]->vn[ob->poly[i + 2]->n]->z);
+        glVertex3f(ob->meshes[0]->v[ob->poly[i + 2]->v]->x, ob->meshes[0]->v[ob->poly[i + 2]->v]->y, ob->meshes[0]->v[ob->poly[i + 2]->v]->z);
+
+        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i+3]->t]->x, ob->meshes[0]->vt[ob->poly[i+3]->t]->y);
+        glNormal3f(ob->meshes[0]->vn[ob->poly[i+3]->n]->x, ob->meshes[0]->vn[ob->poly[i+3]->n]->y, ob->meshes[0]->vn[ob->poly[i+3]->n]->z);
+        glVertex3f(ob->meshes[0]->v[ob->poly[i+3]->v]->x, ob->meshes[0]->v[ob->poly[i+3]->v]->y, ob->meshes[0]->v[ob->poly[i+3]->v]->z);
+
+        glEnd();
     }
-    glEnd();
 
     glPopMatrix();
+
+    float l_pos[4] = {(float)this->position[0], (float)this->position[1], (float)this->position[2], 1};
+    float l_fw[4] = {(float)this->foward[0], (float)this->foward[1], (float)this->foward[2], 1};
+    glLightfv(GL_LIGHT0, GL_POSITION, l_pos);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l_fw);
+     
 }
-/*TESTES*/
 
-/*
-void airplane::display()
-{
-    double x_axys[3] = {1, 0, 0};
-
-    if (foward[1] < 0)
-        theta_z = angle_2_vector(x_axys, this->foward);
-    else
-        theta_z = 360 - angle_2_vector(x_axys, this->foward);
-
-    glPushMatrix();
-
-        glMaterialfv(GL_FRONT, GL_EMISSION, this->materialEmission);
-        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, this->materialColor);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, this->mat_specular);
-        glMaterialfv(GL_FRONT, GL_SHININESS, this->mat_shininess);
-
-        glTranslated(position[0], position[1], position[2]);
-        glRotated(-theta_z, 0, 0, 1);
-        glRotated(90, 1, 0, 0);
-        glutSolidTeapot(radius);
-
-    glPopMatrix();
-}
-*/
 void airplane::move(int elapsed_time)
 {
     double time = double(elapsed_time) / 10;
@@ -183,25 +107,30 @@ void airplane::move(int elapsed_time)
 
 void airplane::left()
 {
-    rotate_z(foward, 0.04);
+    rotate_z(foward, 0.1);
 }
 
 void airplane::right()
 {
-    rotate_z(foward, -0.04);
+    rotate_z(foward, -0.1);
 }
 
 void airplane::up()
 {
     foward[2] = 0.3;
+    if (position[2] > 8 * this->radius)
+    {
+        foward[2] = 0.0;
+    }
 }
 
 void airplane::down()
 {
-    
+
     foward[2] = -0.3;
-    if(position[2] < 0){
-      foward[2] = 0.0; 
+    if (position[2] < 0)
+    {
+        foward[2] = 0.0;
     }
 }
 
@@ -228,6 +157,13 @@ double *airplane::get_foward()
     return this->foward;
 }
 
-void airplane::teleport(double radius)
+void airplane::teleport(circle *ground)
 {
+    this->position[0] = ground->get_centerx();
+    this->position[1] = ground->get_centery();
+}
+
+double airplane::get_radius()
+{
+    return this->radius;
 }

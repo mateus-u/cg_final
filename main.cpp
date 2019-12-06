@@ -154,11 +154,10 @@ void init(char *namexml)
     arena_config = arq.readSVG();
     game = new arena(arena_config);
 
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.0, 0.1, 0.2, 0.0);
     glShadeModel(GL_SMOOTH);
 
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
     glEnable(GL_DEPTH_TEST);
 
     glEnable(GL_TEXTURE_2D);
@@ -168,6 +167,14 @@ void init(char *namexml)
     glLoadIdentity();
     gluPerspective(60.0, GLdouble(width / height), 1, 5000);
     glMatrixMode(GL_MODELVIEW);
+
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+
+    float l_p[4] = {500, 500, 50, 1};
+    glLightfv(GL_LIGHT1, GL_POSITION, l_p);
+
+
 }
 
 int main(int argc, char **argv)
@@ -181,7 +188,7 @@ int main(int argc, char **argv)
     /*Init*/
     init(argv[1]);
     /*Init*/
-    
+
     /*CallBack*/
     glutDisplayFunc(display);
     glutIdleFunc(idle);

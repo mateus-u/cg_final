@@ -30,7 +30,7 @@ private:
 public:
     circle(double cx, double cy, double r, string cor);
     ~circle() {}
-    void display();
+    void display(double z, int text, int pos_normal);
     double get_radius();
     double get_centerx();
     double get_centery();

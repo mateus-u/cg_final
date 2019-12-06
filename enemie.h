@@ -8,9 +8,13 @@ class enemie : public airplane
 
 private:
     circle* circ;
+    int cont =0;
+    int i = -1;
+    
 public:
     enemie(circle* cir);
     ~enemie();
+    void random_move(int elapsed_time);
 };
 
 #endif

@@ -2,7 +2,6 @@
 #define ARENA_H
 
 #include <vector>
-
 #include "forms.h"
 #include "player.h"
 #include "enemie.h"
@@ -19,6 +18,8 @@ private:
     vector<enemie*> enemies;
     vector<groundbase*> gBases;
     circle* ground;
+    circle* sky;
+    
     line* runway;
 
     double center[3];

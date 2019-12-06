@@ -1,4 +1,5 @@
 #include "enemie.h"
+#include <stdlib.h>
 
 enemie::enemie(circle *cir) : airplane(cir)
 {
@@ -25,3 +26,37 @@ enemie::enemie(circle *cir) : airplane(cir)
 enemie::~enemie()
 {
 }
+
+void enemie::random_move(int elapsed_time)
+{
+
+    if (cont > 10)
+    {
+        i = rand() % 5;
+        cont = 0;
+    }
+    if (i == 1)
+    {
+        right();
+        foward_z_0();
+    }
+    else if (i == 2)
+    {
+        left();
+        foward_z_0();
+    }
+    else if (i == 3)
+    {
+        up();
+    }
+    else if (i == 4)
+    {
+        down();
+    }
+
+    move(elapsed_time);
+    foward_z_0();
+
+    cont++;
+}
+

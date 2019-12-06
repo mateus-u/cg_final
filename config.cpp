@@ -24,7 +24,7 @@ void config::display()
 {
     for (int i = 0; i < circles.size(); i++)
     {
-        circles[i]->display();
+        circles[i]->display(0, 0, 1);
     }
 
     for (int i = 0; i < lines.size(); i++)
