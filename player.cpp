@@ -1,6 +1,6 @@
 #include "player.h"
 
-player::player(circle* cir) : airplane(cir)
+player::player(circle *cir) : airplane(cir)
 {
     this->materialEmission[0] = 0.4;
     this->materialEmission[1] = 0.4;
@@ -26,3 +26,13 @@ player::~player()
 {
 }
 
+void player::fire()
+{
+
+    if (bullets.size() < 5)
+    {
+        bullet *b = new bullet(position, foward);
+        b->set_enemie(false);
+        bullets.push_back(b);
+    }
+}

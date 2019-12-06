@@ -14,21 +14,22 @@ using namespace std;
 class arena
 {
 private:
-    player* player1;
-    vector<enemie*> enemies;
-    vector<groundbase*> gBases;
-    circle* ground;
-    circle* sky;
-    
-    line* runway;
+    player *player1;
+    vector<enemie *> enemies;
+    vector<groundbase *> gBases;
+    circle *ground;
+    circle *sky;
+
+    line *runway;
 
     double center[3];
     double radius;
 
 public:
-    arena(config* arena_config);
+    arena(config *arena_config);
     ~arena();
-    void display(bool* key_status, int elapsed_time);
+    void display(bool *key_status, bool *mouse_status, int elapsed_time);
+    void display_bomb();
 };
 
 #endif

@@ -15,6 +15,7 @@ public:
     enemie(circle* cir);
     ~enemie();
     void random_move(int elapsed_time);
+    void fire();
 };
 
 #endif

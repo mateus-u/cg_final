@@ -8,10 +8,11 @@
 #include "xml.h"
 #include "groundbase.h"
 #include "arena.h"
+#include "raster.h"
 
 /*Window*/
 int width = 500;
-int height = 500;
+int height = 700;
 /*Window*/
 
 /*xml*/
@@ -25,6 +26,7 @@ arena *game;
 
 /*Keys*/
 bool key_status[256] = {false};
+bool mouse_status[2] = {false};
 /*Keys*/
 
 /*Time Control*/
@@ -123,13 +125,14 @@ void idle()
 
 void reshape(int w, int h)
 {
-    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    double view_h;
+
+    view_h = 200.0 / 700.0 * h;
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (w <= h)
-        gluPerspective(45, (GLfloat)h / (GLfloat)w, 1, 5000);
-    else
-        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+    glViewport(0, view_h, (GLsizei)w, (GLsizei)h);
+    gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -143,7 +146,30 @@ void display(void)
     previous_time = now;
     /*time control*/
 
-    game->display(key_status, elapsed);
+    double view_h, w, h;
+
+    h = glutGet(GLUT_WINDOW_HEIGHT);
+    w = glutGet(GLUT_WINDOW_WIDTH);
+
+    view_h = 200.0 / 700.0 * h;
+
+    glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glViewport(0, view_h, (GLsizei)w, (GLsizei)h);
+        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+    glMatrixMode(GL_MODELVIEW);
+
+    game->display(key_status, mouse_status, elapsed);
+
+    glPushMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glViewport(0, 0, (GLsizei)w, view_h - 10);
+        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+        glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+
+    game->display_bomb();
 
     glFlush();
 }
@@ -163,18 +189,33 @@ void init(char *namexml)
     glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0, GLdouble(width / height), 1, 5000);
-    glMatrixMode(GL_MODELVIEW);
-
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
 
     float l_p[4] = {500, 500, 50, 1};
     glLightfv(GL_LIGHT1, GL_POSITION, l_p);
+}
+void mouse(int button, int state, int x, int y)
+{
 
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+    {
+        mouse_status[0] = true;
+    }
 
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
+    {
+        mouse_status[1] = true;
+    }
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
+    {
+        mouse_status[0] = false;
+    }
+
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
+    {
+        mouse_status[1] = false;
+    }
 }
 
 int main(int argc, char **argv)
@@ -195,6 +236,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
     glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
     /*CallBack*/
 
     glutMainLoop();

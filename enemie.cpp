@@ -26,9 +26,20 @@ enemie::enemie(circle *cir) : airplane(cir)
 enemie::~enemie()
 {
 }
+void enemie::fire()
+{
 
+    if (bullets.size() < 5)
+    {
+        bullet *b = new bullet(position, foward);
+        b->set_enemie(true);
+        bullets.push_back(b);
+    }
+}
 void enemie::random_move(int elapsed_time)
 {
+
+    int f = rand() % 10;
 
     if (cont > 30)
     {
@@ -51,7 +62,13 @@ void enemie::random_move(int elapsed_time)
     }
     else if (i == 4)
     {
+        if(this->position[0] > 10);
         down();
+    }
+
+    if (f == 1)
+    {
+        fire();
     }
 
     move(elapsed_time);
@@ -59,4 +76,3 @@ void enemie::random_move(int elapsed_time)
 
     cont++;
 }
-

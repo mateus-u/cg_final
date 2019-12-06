@@ -15,6 +15,7 @@ airplane::airplane(circle *cir)
     this->circ = cir;
     this->position[0] = this->circ->get_centerx();
     this->position[1] = this->circ->get_centery();
+    this->position[2] = 50;
     this->radius = this->circ->get_radius();
 
     Loader.LoadFile("model/plane.obj");
@@ -154,6 +155,11 @@ void airplane::display()
     down_ = false;
     left_ = false;
     right_ = false;
+
+    for (int i = 0; i < bullets.size(); i++)
+    {
+        bullets[i]->display();
+    }
 }
 
 void airplane::move(int elapsed_time)
@@ -163,6 +169,10 @@ void airplane::move(int elapsed_time)
     position[0] += foward[0] * this->speed * time;
     position[1] += foward[1] * this->speed * time;
     position[2] += foward[2] * this->speed * time;
+
+    for (int i = 0; i < bullets.size(); i++){
+        bullets[i]->move(elapsed_time);
+    }
 }
 
 void airplane::left(int elapsed_time)
@@ -236,4 +246,48 @@ void airplane::teleport(circle *ground)
 double airplane::get_radius()
 {
     return this->radius;
+}
+
+void airplane::fire_bomb()
+{
+
+    this->bomb_ = new bomb(position, foward);
+}
+
+double *airplane::get_bomb_position()
+{
+
+    return bomb_->get_position();
+}
+
+void airplane::move_bomb(double elapsed_time)
+{
+
+    bomb_->move(elapsed_time);
+    bomb_->display();
+}
+
+void airplane::display_bomb()
+{
+    bomb_->display();
+}
+
+void airplane::delete_bomb()
+{
+
+    delete (bomb_);
+    bomb_ = NULL;
+}
+
+bool airplane::bomb_lauched()
+{
+    if (bomb_ == NULL)
+        return false;
+    else
+        return true;
+}
+
+void airplane::set_bomb_cam()
+{
+    bomb_->set_cam();
 }

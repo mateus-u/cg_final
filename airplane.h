@@ -5,8 +5,14 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <vector>
+
 #include "forms.h"
 #include "loadTexture.h"
+#include "bomb.h"
+#include "bullet.h"
+
+using namespace std;
 
 class airplane
 {
@@ -21,6 +27,8 @@ protected:
 
     double position[3] = {0};
     double foward[3] = {1, 1, 1};
+
+    bomb *bomb_ = NULL;
 
     double radius;
     double speed = 1;
@@ -52,6 +60,17 @@ public:
     void teleport(circle *ground);
     double *intersection(double rad);
     void load_obj();
+
+    void fire_bomb();
+    double *get_bomb_position();
+    void delete_bomb();
+    void move_bomb(double elapsed_time);
+    bool bomb_lauched();
+    void display_bomb();
+    void set_bomb_cam();
+
+    vector<bullet *> bullets;
+
 };
 
 #endif

@@ -78,7 +78,7 @@ double dist2d(double *p1, double *p2)
     return sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-void arena::display(bool *key_status, int elapsed_time)
+void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
 {
     double *player_pos = player1->get_position();
     double *player_fow = player1->get_foward();
@@ -113,6 +113,42 @@ void arena::display(bool *key_status, int elapsed_time)
 
             cout << "colisão" << endl;
         }
+
+        vector<bullet *>::iterator it;
+        it = this->enemies[i]->bullets.begin();
+        for (int j = 0; j < enemies[i]->bullets.size(); j++)
+        {
+            if (dist2d(this->enemies[i]->bullets[j]->get_position(), center) >= this->radius)
+            {
+                this->enemies[i]->bullets.erase(it);
+            }
+            it++;
+
+            if (dist(player1->get_position(), enemies[i]->bullets[j]->get_position()) < (player1->get_radius())){
+
+                cout << "Faleceu" << endl;
+            }
+
+        }
+    }
+
+    vector<bullet *>::iterator it;
+    it = this->player1->bullets.begin();
+    for (int j = 0; j < player1->bullets.size(); j++)
+    {
+        if (dist2d(this->player1->bullets[j]->get_position(), center) >= this->radius)
+        {
+            this->player1->bullets.erase(it);
+        }
+        it++;
+
+        for (int k = 0; k < enemies.size(); k++){
+
+            if(dist(enemies[k]->get_position(), player1->bullets[j]->get_position()) < (enemies[k]->get_radius())){
+
+                cout << "matou" << endl;
+            }
+        }
     }
 
     for (int i = 0; i < this->gBases.size(); i++)
@@ -123,6 +159,16 @@ void arena::display(bool *key_status, int elapsed_time)
             cout << dist(player1->get_position(), gBases[i]->get_position()) << endl;
 
             cout << "colisão gb" << endl;
+        }
+
+        if (player1->bomb_lauched())
+        {
+            if (dist(player1->get_bomb_position(), gBases[i]->get_position()) < gBases[i]->get_radius())
+            {
+                cout << "acertou miseravel" << endl;
+                player1->delete_bomb();
+                cout << "deleted" << endl;
+            }
         }
     }
 
@@ -154,7 +200,28 @@ void arena::display(bool *key_status, int elapsed_time)
     else
     {
         player1->foward_z_0();
+    }
 
+    if (mouse_status[1])
+    {
+        if (!player1->bomb_lauched())
+            player1->fire_bomb();
+    }
+
+    if (mouse_status[0])
+    {
+        player1->fire();
+    }
+
+    if (player1->bomb_lauched())
+    {
+        player1->move_bomb(elapsed_time);
+        if (player1->get_bomb_position()[2] < 0)
+        {
+            player1->delete_bomb();
+            cout << "deleted" << endl;
+        }
+        cout << "lancou" << endl;
     }
 
     for (int i = 0; i < this->gBases.size(); i++)
@@ -162,10 +229,37 @@ void arena::display(bool *key_status, int elapsed_time)
         this->gBases[i]->display();
     }
 
+    for (int i = 0; i < this->enemies.size(); i++)
     {
+        this->enemies[i]->display();
+    }
+}
+
+void arena::display_bomb()
+{
+
+    if (player1->bomb_lauched())
+    {
+        player1->set_bomb_cam();
+
+        this->ground->display(0, ground_texture, 1);
+
+        this->sky->display(player1->get_radius() * 9, sky_texture, -1);
+
+        this->runway->display();
+
+        //this->player1->display();
+
+        for (int i = 0; i < this->gBases.size(); i++)
+        {
+            this->gBases[i]->display();
+        }
+
         for (int i = 0; i < this->enemies.size(); i++)
         {
             this->enemies[i]->display();
         }
+
+        player1->display_bomb();
     }
 }
