@@ -1,6 +1,6 @@
 #include "airplane.h"
 #include "matrix.h"
-#include "loadOBJ.h"
+#include "OBJ_Loader.h"
 #include "imageloader.h"
 #include "loadTexture.h"
 #include <iostream>
@@ -9,7 +9,7 @@ using namespace std;
 
 void load_obj();
 GLuint texture_plane = 0;
-obj *ob = new obj();
+objl::Loader Loader;
 
 airplane::airplane(circle *cir)
 {
@@ -18,8 +18,9 @@ airplane::airplane(circle *cir)
     this->position[1] = this->circ->get_centery();
     this->radius = this->circ->get_radius();
 
-    load_obj();
-    texture_plane = LoadTextureRAW("model/plane.bmp");
+    Loader.LoadFile("model/plane.obj");
+
+    //texture_plane = LoadTextureRAW("model/plane.bmp");
 }
 
 airplane::~airplane()
@@ -28,10 +29,50 @@ airplane::~airplane()
 
 /*TESTES*/
 
-void load_obj()
+void airplane::load_obj()
 {
-    char name[50] = "model/plane.obj";
-    ob->load(name);
+    for (int i = 0; i < Loader.LoadedMeshes.size(); i++)
+    {
+
+        glPushMatrix();
+
+        if (i >= 10 && i <= 13)
+        {
+            glRotated(angle_helix, 0, 0, 1);
+
+            if (i == 13)
+            {
+                angle_helix += 15;
+            }
+        }
+
+        objl::Mesh curMesh = Loader.LoadedMeshes[i];
+
+        for (int j = 0; j < curMesh.Indices.size(); j += 3)
+        {
+            int j_1 = curMesh.Indices[j];
+            int j_2 = curMesh.Indices[j + 1];
+            int j_3 = curMesh.Indices[j + 2];
+
+            glBegin(GL_TRIANGLES);
+
+            glVertex3d(curMesh.Vertices[j_1].Position.X, curMesh.Vertices[j_1].Position.Y, curMesh.Vertices[j_1].Position.Z);
+            glNormal3d(curMesh.Vertices[j_1].Normal.X, curMesh.Vertices[j_1].Normal.Y, curMesh.Vertices[j_1].Normal.Z);
+            glTexCoord2d(curMesh.Vertices[j_1].TextureCoordinate.X, curMesh.Vertices[j_1].TextureCoordinate.Y);
+
+            glVertex3d(curMesh.Vertices[j_2].Position.X, curMesh.Vertices[j_2].Position.Y, curMesh.Vertices[j_2].Position.Z);
+            glNormal3d(curMesh.Vertices[j_2].Normal.X, curMesh.Vertices[j_2].Normal.Y, curMesh.Vertices[j_2].Normal.Z);
+            glTexCoord2d(curMesh.Vertices[j_2].TextureCoordinate.X, curMesh.Vertices[j_2].TextureCoordinate.Y);
+
+            glVertex3d(curMesh.Vertices[j_3].Position.X, curMesh.Vertices[j_3].Position.Y, curMesh.Vertices[j_3].Position.Z);
+            glNormal3d(curMesh.Vertices[j_3].Normal.X, curMesh.Vertices[j_3].Normal.Y, curMesh.Vertices[j_3].Normal.Z);
+            glTexCoord2d(curMesh.Vertices[j_3].TextureCoordinate.X, curMesh.Vertices[j_3].TextureCoordinate.Y);
+
+            glEnd();
+        }
+
+        glPopMatrix();
+    }
 }
 
 void airplane::display()
@@ -55,37 +96,14 @@ void airplane::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTranslated(position[0], position[1], position[2]);
-    //glutSolidSphere(this->circ->get_radius(), 360, 360);
-    glRotated(180, 0, 0, 1);
     glRotated(-theta_z, 0, 0, 1);
-
-    int a = 3;
+    glRotated(90, 0, 1, 0);
+    glRotated(90, 0, 0, 1);
+    int a = 1;
     glScaled(this->circ->get_radius() / a, this->circ->get_radius() / a, this->circ->get_radius() / a);
-
     glBindTexture(GL_TEXTURE_2D, texture_plane);
 
-    for (int i = 0; i < ob->poly.size(); i += 4)
-    {
-        glBegin(GL_QUADS);
-
-        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i]->t]->x, ob->meshes[0]->vt[ob->poly[i]->t]->y);
-        glNormal3f(ob->meshes[0]->vn[ob->poly[i]->n]->x, ob->meshes[0]->vn[ob->poly[i]->n]->y, ob->meshes[0]->vn[ob->poly[i]->n]->z);
-        glVertex3f(ob->meshes[0]->v[ob->poly[i]->v]->x, ob->meshes[0]->v[ob->poly[i]->v]->y, ob->meshes[0]->v[ob->poly[i]->v]->z);
-
-        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i + 1]->t]->x, ob->meshes[0]->vt[ob->poly[i + 1]->t]->y);
-        glNormal3f(ob->meshes[0]->vn[ob->poly[i + 1]->n]->x, ob->meshes[0]->vn[ob->poly[i + 1]->n]->y, ob->meshes[0]->vn[ob->poly[i + 1]->n]->z);
-        glVertex3f(ob->meshes[0]->v[ob->poly[i + 1]->v]->x, ob->meshes[0]->v[ob->poly[i + 1]->v]->y, ob->meshes[0]->v[ob->poly[i + 1]->v]->z);
-
-        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i + 2]->t]->x, ob->meshes[0]->vt[ob->poly[i + 2]->t]->y);
-        glNormal3f(ob->meshes[0]->vn[ob->poly[i + 2]->n]->x, ob->meshes[0]->vn[ob->poly[i + 2]->n]->y, ob->meshes[0]->vn[ob->poly[i + 2]->n]->z);
-        glVertex3f(ob->meshes[0]->v[ob->poly[i + 2]->v]->x, ob->meshes[0]->v[ob->poly[i + 2]->v]->y, ob->meshes[0]->v[ob->poly[i + 2]->v]->z);
-
-        glTexCoord2f(ob->meshes[0]->vt[ob->poly[i+3]->t]->x, ob->meshes[0]->vt[ob->poly[i+3]->t]->y);
-        glNormal3f(ob->meshes[0]->vn[ob->poly[i+3]->n]->x, ob->meshes[0]->vn[ob->poly[i+3]->n]->y, ob->meshes[0]->vn[ob->poly[i+3]->n]->z);
-        glVertex3f(ob->meshes[0]->v[ob->poly[i+3]->v]->x, ob->meshes[0]->v[ob->poly[i+3]->v]->y, ob->meshes[0]->v[ob->poly[i+3]->v]->z);
-
-        glEnd();
-    }
+    load_obj();
 
     glPopMatrix();
 
@@ -93,7 +111,6 @@ void airplane::display()
     float l_fw[4] = {(float)this->foward[0], (float)this->foward[1], (float)this->foward[2], 1};
     glLightfv(GL_LIGHT0, GL_POSITION, l_pos);
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l_fw);
-     
 }
 
 void airplane::move(int elapsed_time)
@@ -128,7 +145,7 @@ void airplane::down()
 {
 
     foward[2] = -0.3;
-    if (position[2] < 0)
+    if (position[2] < 10)
     {
         foward[2] = 0.0;
     }

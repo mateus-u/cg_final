@@ -166,7 +166,7 @@ void arena::display(bool *key_status, int elapsed_time)
     {
         for (int i = 0; i < this->enemies.size(); i++)
         {
-            //this->enemies[i]->display();
+            this->enemies[i]->display();
         }
     }
 }

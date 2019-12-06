@@ -28,6 +28,8 @@ protected:
     double theta_y = 0;
     double theta_z = 0;
 
+    double angle_helix = 0.0;
+
     
     
 public:
@@ -46,6 +48,7 @@ public:
     void foward_z_0();
     void teleport(circle* ground);
     double* intersection(double rad);
+    void load_obj();
 };
 
 #endif
