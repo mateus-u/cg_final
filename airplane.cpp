@@ -7,7 +7,6 @@
 
 using namespace std;
 
-void load_obj();
 GLuint texture_plane = 0;
 objl::Loader Loader;
 
@@ -20,7 +19,7 @@ airplane::airplane(circle *cir)
 
     Loader.LoadFile("model/plane.obj");
 
-    //texture_plane = LoadTextureRAW("model/plane.bmp");
+    texture_plane = LoadTextureRAW("model/plane.bmp");
 }
 
 airplane::~airplane()
@@ -33,20 +32,18 @@ void airplane::load_obj()
 {
     for (int i = 0; i < Loader.LoadedMeshes.size(); i++)
     {
-
         glPushMatrix();
 
-        if (i >= 10 && i <= 13)
-        {
+        if(i == 0){
+
             glRotated(angle_helix, 0, 0, 1);
+            angle_helix += 15;
 
-            if (i == 13)
-            {
-                angle_helix += 15;
-            }
+            if(angle_helix > 360) angle_helix = 0;
+
         }
-
         objl::Mesh curMesh = Loader.LoadedMeshes[i];
+        glBindTexture(GL_TEXTURE_2D, texture_plane);
 
         for (int j = 0; j < curMesh.Indices.size(); j += 3)
         {
@@ -96,12 +93,13 @@ void airplane::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTranslated(position[0], position[1], position[2]);
+
     glRotated(-theta_z, 0, 0, 1);
+    glRotated(180, 0, 0, 1);
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
-    int a = 1;
+    int a = 120;
     glScaled(this->circ->get_radius() / a, this->circ->get_radius() / a, this->circ->get_radius() / a);
-    glBindTexture(GL_TEXTURE_2D, texture_plane);
 
     load_obj();
 

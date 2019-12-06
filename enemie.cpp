@@ -3,12 +3,12 @@
 
 enemie::enemie(circle *cir) : airplane(cir)
 {
-    this->materialEmission[0] = 0.4;
-    this->materialEmission[1] = 0.4;
-    this->materialEmission[2] = 0.4;
+    this->materialEmission[0] = 0.9;
+    this->materialEmission[1] = 0.9;
+    this->materialEmission[2] = 0.9;
     this->materialEmission[3] = 1.0;
 
-    this->materialColor[0] = 0.8;
+    this->materialColor[0] = 1.0;
     this->materialColor[1] = 0.0;
     this->materialColor[2] = 0.0;
     this->materialColor[3] = 1.0;
