@@ -20,7 +20,7 @@ protected:
     GLfloat mat_shininess[5] = {0};
 
     double position[3] = {0};
-    double foward[3] = {1,1,1};
+    double foward[3] = {1, 1, 1};
 
     double radius;
     double speed = 1;
@@ -30,8 +30,11 @@ protected:
 
     double angle_helix = 0.0;
 
-    
-    
+    bool up_ = false;
+    bool down_ = false;
+    bool left_ = false;
+    bool right_ = false;
+
 public:
     airplane(circle *cir);
     ~airplane();
@@ -39,15 +42,15 @@ public:
     double get_radius();
     void display();
     void move(int elapsed_time);
-    void left();
-    void right();
+    void left(int elapsed_time);
+    void right(int elapsed_time);
     double *get_position();
     double *get_foward();
     void up();
     void down();
     void foward_z_0();
-    void teleport(circle* ground);
-    double* intersection(double rad);
+    void teleport(circle *ground);
+    double *intersection(double rad);
     void load_obj();
 };
 

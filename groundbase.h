@@ -14,7 +14,7 @@ private:
     double position[3] = {};
 
     double angle = rand() %360;
-    double speed = (rand() % 10) / 100.00;
+    double speed = (rand() % 10 + 1) / 50.00;
 
 public:
     groundbase(circle* cir);

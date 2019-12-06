@@ -133,14 +133,12 @@ void arena::display(bool *key_status, int elapsed_time)
 
     if (key_status['a'])
     {
-        player1->left();
-        player1->foward_z_0();
+        player1->left(elapsed_time);
     }
 
     else if (key_status['d'])
     {
-        player1->right();
-        player1->foward_z_0();
+        player1->right(elapsed_time);
     }
 
     if (key_status['w'])
@@ -156,6 +154,7 @@ void arena::display(bool *key_status, int elapsed_time)
     else
     {
         player1->foward_z_0();
+
     }
 
     for (int i = 0; i < this->gBases.size(); i++)

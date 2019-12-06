@@ -30,19 +30,19 @@ enemie::~enemie()
 void enemie::random_move(int elapsed_time)
 {
 
-    if (cont > 10)
+    if (cont > 30)
     {
         i = rand() % 5;
         cont = 0;
     }
     if (i == 1)
     {
-        right();
+        right(elapsed_time);
         foward_z_0();
     }
     else if (i == 2)
     {
-        left();
+        left(elapsed_time);
         foward_z_0();
     }
     else if (i == 3)

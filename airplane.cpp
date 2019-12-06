@@ -34,16 +34,55 @@ void airplane::load_obj()
     {
         glPushMatrix();
 
-        if(i == 0){
-
-            glRotated(angle_helix, 0, 0, 1);
-            angle_helix += 15;
-
-            if(angle_helix > 360) angle_helix = 0;
-
-        }
         objl::Mesh curMesh = Loader.LoadedMeshes[i];
         glBindTexture(GL_TEXTURE_2D, texture_plane);
+
+        if (up_ && right_)
+        {
+            glRotated(-15, 1, 0, 0);
+            glRotated(25, 0, 0, 1);
+        }
+        else if (up_ && left_)
+        {
+            glRotated(-15, 1, 0, 0);
+            glRotated(-25, 0, 0, 1);
+        }
+        else if (down_ && right_)
+        {
+            glRotated(+15, 1, 0, 0);
+            glRotated(25, 0, 0, 1);
+        }
+        else if (down_ && left_)
+        {
+            glRotated(+15, 1, 0, 0);
+            glRotated(-25, 0, 0, 1);
+        }
+        else if (up_)
+        {
+            glRotated(-20, 1, 0, 0);
+        }
+        else if (down_)
+        {
+            glRotated(+20, 1, 0, 0);
+        }
+        else if (left_)
+        {
+            glRotated(-30, 0, 0, 1);
+        }
+        else if (right_)
+        {
+            glRotated(30, 0, 0, 1);
+        }
+
+        if (i == 5)
+        {
+
+            glRotated(angle_helix, 0, 0, 1);
+            angle_helix += 20;
+
+            if (angle_helix > 360)
+                angle_helix = 0;
+        }
 
         for (int j = 0; j < curMesh.Indices.size(); j += 3)
         {
@@ -93,12 +132,13 @@ void airplane::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTranslated(position[0], position[1], position[2]);
-
+    //glutSolidSphere(20, 360, 360);
     glRotated(-theta_z, 0, 0, 1);
-    glRotated(180, 0, 0, 1);
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
-    int a = 120;
+
+    int a = 500;
+
     glScaled(this->circ->get_radius() / a, this->circ->get_radius() / a, this->circ->get_radius() / a);
 
     load_obj();
@@ -109,6 +149,11 @@ void airplane::display()
     float l_fw[4] = {(float)this->foward[0], (float)this->foward[1], (float)this->foward[2], 1};
     glLightfv(GL_LIGHT0, GL_POSITION, l_pos);
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l_fw);
+
+    up_ = false;
+    down_ = false;
+    left_ = false;
+    right_ = false;
 }
 
 void airplane::move(int elapsed_time)
@@ -120,14 +165,20 @@ void airplane::move(int elapsed_time)
     position[2] += foward[2] * this->speed * time;
 }
 
-void airplane::left()
+void airplane::left(int elapsed_time)
 {
-    rotate_z(foward, 0.1);
+    double angle = elapsed_time * speed / 1000;
+    rotate_z(foward, angle);
+
+    left_ = true;
 }
 
-void airplane::right()
+void airplane::right(int elapsed_time)
 {
-    rotate_z(foward, -0.1);
+    double angle = elapsed_time * speed / 1000;
+    rotate_z(foward, -angle);
+
+    right_ = true;
 }
 
 void airplane::up()
@@ -137,6 +188,8 @@ void airplane::up()
     {
         foward[2] = 0.0;
     }
+
+    up_ = true;
 }
 
 void airplane::down()
@@ -147,6 +200,8 @@ void airplane::down()
     {
         foward[2] = 0.0;
     }
+
+    down_ = true;
 }
 
 void airplane::foward_z_0()
