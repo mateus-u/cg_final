@@ -16,6 +16,8 @@ public:
     ~enemie();
     void random_move(int elapsed_time);
     void fire();
+
+    double fire_freq;
 };
 
 #endif

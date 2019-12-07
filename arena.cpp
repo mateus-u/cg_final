@@ -8,6 +8,7 @@ using namespace std;
 GLuint ground_texture = 0;
 GLuint sky_texture = 0;
 GLuint background_texture = 0;
+GLuint way_texture = 0;
 
 arena::arena(config *arena_config)
 {
@@ -26,6 +27,9 @@ arena::arena(config *arena_config)
         {
             enemie *e = new enemie(arena_config->get_circles()[i]);
             e->set_foward(this->ground->get_centerx(), this->ground->get_centery(), 0);
+            e->fire_freq = arena_config->fire_frequency;
+            e->speed = arena_config->enemie_speed;
+            e->bullet_speed = arena_config->bullet_enemy_speed;
             this->enemies.push_back(e);
         }
 
@@ -52,8 +56,12 @@ arena::arena(config *arena_config)
     ground_texture = LoadTextureRAW("model/Grass.bmp");
     sky_texture = LoadTextureRAW("model/sky.bmp");
     background_texture = LoadTextureRAW("model/back.bmp");
+    way_texture = LoadTextureRAW("model/way.bmp");
 
     this->height = player1->get_radius() * 9;
+
+    player1->bullet_speed = arena_config->bullet_player_speed;
+    player1->speed = arena_config->player_speed;
 }
 
 arena::~arena()
@@ -96,7 +104,7 @@ void arena::display_backgroud()
 
     float texInc = 1.0f / static_cast<float>(DIV_COUNT);
     float rad = radius * 1.3;
-    
+
     // Draw cylinder.
     glBegin(GL_TRIANGLE_STRIP);
 
@@ -152,20 +160,34 @@ double dist2d(double *p1, double *p2)
     return sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
+void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, double mouseX, double mouseY)
 {
     double *player_pos = player1->get_position();
     double *player_fow = player1->get_foward();
 
     glLoadIdentity();
-    gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25, player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
+
+    if (key_status['1'])
+    {
+
+        gluLookAt(player_pos[0] + 9 * player_fow[0], player_pos[1] + 9 * player_fow[1], player_pos[2] + 7,
+                  player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
+    }
+    else if (key_status['2'])
+    {
+    }
+    else if (key_status['3'])
+    {
+        gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25,
+                  player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
+    }
 
     display_backgroud();
-    this->ground->display(0, ground_texture, 1);
+    this->ground->display(0, ground_texture, 1, 10);
 
-    this->sky->display(player1->get_radius() * 9, sky_texture, -1);
+    this->sky->display(player1->get_radius() * 9, sky_texture, -1, 1);
 
-    this->runway->display();
+    this->runway->display(way_texture);
 
     this->player1->display();
     this->player1->ligh_control();
@@ -279,7 +301,17 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
     {
         player1->foward_z_0();
     }
+    if (mouse_status[2])
+    {
+        camXYAngle += mouseX - lastX;
+        camXZAngle += mouseY - lastY;
 
+        camXYAngle = (int)camXYAngle % 360;
+        camXZAngle = (int)camXZAngle % 360;
+
+        lastX = mouseX;
+        lastY = mouseY;
+    }
     if (mouse_status[1])
     {
         if (!player1->bomb_lauched())
@@ -289,6 +321,7 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
     if (mouse_status[0])
     {
         player1->fire();
+        mouse_status[0] = false;
     }
 
     if (player1->bomb_lauched())
@@ -320,11 +353,9 @@ void arena::display_bomb()
     {
         player1->set_bomb_cam();
 
-        this->ground->display(0, ground_texture, 1);
+        this->ground->display(0, ground_texture, 1, 10);
 
-        this->sky->display(player1->get_radius() * 9, sky_texture, -1);
-
-        this->runway->display();
+        this->runway->display(way_texture);
 
         //this->player1->display();
 

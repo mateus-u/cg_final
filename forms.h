@@ -30,7 +30,7 @@ private:
 public:
     circle(double cx, double cy, double r, string cor);
     ~circle() {}
-    void display(double z, int text, int pos_normal);
+    void display(double z, int text, int pos_normal, int qtd_text);
     double get_radius();
     double get_centerx();
     double get_centery();
@@ -49,7 +49,7 @@ private:
 public:
     line(double x1, double y1, double x2, double y2, string style);
     ~line() {}
-    void display();
+    void display(int tex);
     double get_x1();
     double get_y1();
     double get_x2();

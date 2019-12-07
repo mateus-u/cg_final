@@ -24,12 +24,12 @@ void config::display()
 {
     for (int i = 0; i < circles.size(); i++)
     {
-        circles[i]->display(0, 0, 1);
+        circles[i]->display(0, 0, 1, 1);
     }
 
     for (int i = 0; i < lines.size(); i++)
     {
-        lines[i]->display();
+        lines[i]->display(0);
     }
 }
 

@@ -26,7 +26,7 @@ arena *game;
 
 /*Keys*/
 bool key_status[256] = {false};
-bool mouse_status[2] = {false};
+bool mouse_status[5] = {false};
 /*Keys*/
 
 /*Time Control*/
@@ -34,88 +34,45 @@ int previous_time;
 int now;
 /*Time Control*/
 
+/*Mouse*/
+double mouseX = 0;
+double mouseY = 0;
+/*Mouse*/
+
 /*Testes*/
 
 /*Testes*/
 
 void keyPress(unsigned char key, int x, int y)
 {
-    switch (key)
+
+    key_status[key] = true;
+
+    if (key == 27)
+        exit(0);
+
+    if (key == '1')
     {
-    case ('r' | 'R'):
-        key_status[(int)('r')] = true;
-        break;
-
-    case ('a' | 'A'):
-        key_status[(int)('a')] = true;
-        break;
-    case ('d' | 'D'):
-        key_status[(int)('d')] = true;
-        break;
-
-    case ('w' | 'W'):
-        key_status[(int)('w')] = true;
-        break;
-
-    case ('s' | 's'):
-        key_status[(int)('s')] = true;
-        break;
-
-    case ('u' | 'U'):
-        key_status[(int)('u')] = true;
-        break;
-
-    case ('+'):
-        key_status[(int)('+')] = true;
-        break;
-
-    case ('-'):
-        key_status[(int)('-')] = true;
-        break;
-
-    case 27:     // Termina o programa qdo
-        exit(0); // a tecla ESC for pressionada
-        break;
-    default:
-        break;
+        key_status['2'] = false;
+        key_status['3'] = false;
+    }
+    if (key == '2')
+    {
+        key_status['1'] = false;
+        key_status['3'] = false;
+    }
+    if (key == '3')
+    {
+        key_status['1'] = false;
+        key_status['2'] = false;
     }
 }
 
 void keyUp(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
-    case ('r' | 'R'):
-        key_status[(int)('r')] = false;
-        break;
 
-    case ('a' | 'A'):
-        key_status[(int)('a')] = false;
-        break;
-
-    case ('d' | 'D'):
-        key_status[(int)('d')] = false;
-        break;
-
-    case ('w' | 'W'):
-        key_status[(int)('w')] = false;
-        break;
-
-    case ('s' | 's'):
-        key_status[(int)('s')] = false;
-        break;
-
-    case ('+'):
-        key_status[(int)('+')] = false;
-        break;
-
-    case ('-'):
-        key_status[(int)('-')] = false;
-        break;
-
-    default:
-        break;
-    }
+    if (key != 'u' && key != '1' && key != '2' && key != '3')
+        key_status[key] = false;
 }
 
 void idle()
@@ -159,7 +116,7 @@ void display(void)
     gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 
-    game->display(key_status, mouse_status, elapsed);
+    game->display(key_status, mouse_status, elapsed, mouseX, mouseY);
 
     glPushMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -190,8 +147,6 @@ void light_control()
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-
 }
 void init(char *namexml)
 {
@@ -209,13 +164,15 @@ void init(char *namexml)
     glDepthFunc(GL_LEQUAL);
 
     light_control();
+
+    key_status['3'] = true;
 }
 void mouse(int button, int state, int x, int y)
 {
 
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
-        mouse_status[0] = true;
+        mouse_status[0] = false;
     }
 
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN)
@@ -224,13 +181,28 @@ void mouse(int button, int state, int x, int y)
     }
     if (button == GLUT_LEFT_BUTTON && state == GLUT_UP)
     {
-        mouse_status[0] = false;
+        mouse_status[0] = true;
     }
 
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP)
     {
         mouse_status[1] = false;
     }
+
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_DOWN)
+    {
+        mouse_status[2] = true;
+    }
+    if (button == GLUT_MIDDLE_BUTTON && state == GLUT_UP)
+    {
+        mouse_status[2] = false;
+    }
+}
+
+void mouse_motion(int x, int y)
+{
+    mouseY = y;
+    mouseX = x;
 }
 
 int main(int argc, char **argv)
@@ -252,6 +224,7 @@ int main(int argc, char **argv)
     glutKeyboardUpFunc(keyUp);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
+    glutMotionFunc(mouse_motion);
     /*CallBack*/
 
     glutMainLoop();

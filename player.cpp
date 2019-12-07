@@ -3,7 +3,7 @@
 player::player(circle *cir) : airplane(cir)
 {
     this->materialEmission[0] = 0.0;
-    this->materialEmission[1] = 1.0;
+    this->materialEmission[1] = 0.0;
     this->materialEmission[2] = 0.0;
     this->materialEmission[3] = 1.0;
 
@@ -33,6 +33,7 @@ void player::fire()
     {
         bullet *b = new bullet(position, foward);
         b->set_enemie(false);
+        b->speed = this->bullet_speed;
         bullets.push_back(b);
     }
 }

@@ -111,7 +111,6 @@ void airplane::load_obj()
     }
 }
 
-
 void airplane::display()
 {
 
@@ -132,9 +131,7 @@ void airplane::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glBindTexture(GL_TEXTURE_2D, texture_plane);
-
     glTranslated(position[0], position[1], position[2]);
-    //glutSolidSphere(20, 360, 360);
     glRotated(-theta_z, 0, 0, 1);
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
@@ -146,11 +143,6 @@ void airplane::display()
     load_obj();
 
     glPopMatrix();
-
-    float l_pos[4] = {(float)this->position[0], (float)this->position[1], (float)this->position[2], 1};
-    float l_fw[4] = {(float)this->foward[0], (float)this->foward[1], (float)this->foward[2], 1};
-    glLightfv(GL_LIGHT0, GL_POSITION, l_pos);
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, l_fw);
 
     up_ = false;
     down_ = false;

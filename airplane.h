@@ -31,7 +31,7 @@ protected:
     bomb *bomb_ = NULL;
 
     double radius;
-    double speed = 1;
+
     double theta_x = 0;
     double theta_y = 0;
     double theta_z = 0;
@@ -71,6 +71,8 @@ public:
 
     vector<bullet *> bullets;
 
+    double speed = 1;
+    double bullet_speed = 1;
 };
 
 #endif

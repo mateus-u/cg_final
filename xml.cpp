@@ -39,12 +39,30 @@ void xml::readXML(char *caminho_config)
   if (inputFiles->Attribute("vel"))
   {
     str = inputFiles->Attribute("vel");
-    this->vel_jogador = atof(str.c_str());
+    this->arena_config->player_speed = atof(str.c_str());
   }
   if (inputFiles->Attribute("velTiro"))
   {
     str = inputFiles->Attribute("velTiro");
-    this->vel_tiro = atof(str.c_str());
+    this->arena_config->bullet_player_speed = atof(str.c_str());
+  }
+
+  inputFiles = doc.FirstChildElement("aplicacao")->FirstChildElement("inimigo");
+
+  if (inputFiles->Attribute("freqTiro"))
+  {
+    str = inputFiles->Attribute("freqTiro");
+    this->arena_config->fire_frequency = atof(str.c_str());
+  }
+  if (inputFiles->Attribute("vel"))
+  {
+    str = inputFiles->Attribute("vel");
+    this->arena_config->enemie_speed = atof(str.c_str());
+  }
+  if (inputFiles->Attribute("velTiro"))
+  {
+    str = inputFiles->Attribute("velTiro");
+    this->arena_config->bullet_enemy_speed = atof(str.c_str());
   }
   this->caminho_arena = caminho + "/" + nome + '.' + tipo;
 }
@@ -87,7 +105,6 @@ config *xml::readSVG()
       circle *circ = new circle(cx, cy, raio, fill);
 
       this->arena_config->addCircle(circ);
-      
     }
     else
     {
@@ -107,17 +124,15 @@ config *xml::readSVG()
         y2 = atof(str.c_str());
 
         str = inputFiles->Attribute("style");
-        
-        line* li = new line(x1, y1, x2, y2, str);
+
+        line *li = new line(x1, y1, x2, y2, str);
 
         this->arena_config->addLine(li);
       }
     }
-    
+
     inputFiles = inputFiles->NextSiblingElement();
-  
   }
 
   return this->arena_config;
-
 }

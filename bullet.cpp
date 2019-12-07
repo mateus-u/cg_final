@@ -21,10 +21,10 @@ bullet::~bullet()
 
 void bullet::move(int elapsed_time)
 {
-    double d = elapsed_time * speed * 0.5;
+    double time = double(elapsed_time) / 10;
 
-    this->position[0] += this->foward[0] * d;
-    this->position[1] += this->foward[1] * d;
+    this->position[0] += this->foward[0] * this->speed * time;;
+    this->position[1] += this->foward[1] * this->speed * time;;
 }
 
 void bullet::display()
