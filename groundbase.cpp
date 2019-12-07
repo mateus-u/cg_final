@@ -86,7 +86,6 @@ void groundbase::display()
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTranslated(this->circ->get_centerx(), this->circ->get_centery(), 0);
-    //glutSolidSphere(20, 350, 350);
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
     int a = 150;

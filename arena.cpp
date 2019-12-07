@@ -1,5 +1,6 @@
 #include "arena.h"
 #include "math.h"
+#include "raster.h"
 #include "loadTexture.h"
 #include <iostream>
 
@@ -10,8 +11,13 @@ GLuint sky_texture = 0;
 GLuint background_texture = 0;
 GLuint way_texture = 0;
 
+/*Testes*/
+/*Testes*/
+
 arena::arena(config *arena_config)
 {
+
+    this->arena_config = arena_config;
 
     for (int i = 0; i < arena_config->get_circles().size(); i++)
     {
@@ -26,7 +32,7 @@ arena::arena(config *arena_config)
         if (arena_config->get_circles()[i]->get_color() == "red")
         {
             enemie *e = new enemie(arena_config->get_circles()[i]);
-            e->set_foward(this->ground->get_centerx(), this->ground->get_centery(), 0);
+            e->set_foward(e->get_position()[0] * (-500), e->get_position()[1] * 500, 50);
             e->fire_freq = arena_config->fire_frequency;
             e->speed = arena_config->enemie_speed;
             e->bullet_speed = arena_config->bullet_enemy_speed;
@@ -35,15 +41,14 @@ arena::arena(config *arena_config)
 
         if (arena_config->get_circles()[i]->get_color() == "orange")
         {
-
             this->gBases.push_back(new groundbase(arena_config->get_circles()[i]));
         }
 
         if (arena_config->get_circles()[i]->get_color() == "green")
         {
-            arena_config->get_circles()[i]->set_radius(arena_config->get_circles()[i]->get_radius() * 2);
             this->player1 = new player(arena_config->get_circles()[i]);
-            this->player1->set_foward(arena_config->get_lines()[0]->get_x2(), arena_config->get_lines()[0]->get_y2(), 0);
+            this->player1->set_radius(this->player1->get_radius() * 2);
+            this->player1->set_foward(arena_config->get_lines()[0]->get_x2(), arena_config->get_lines()[0]->get_y2(), 8);
         }
     }
 
@@ -160,16 +165,109 @@ double dist2d(double *p1, double *p2)
     return sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
-void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, double mouseX, double mouseY)
+void arena::reset()
 {
+    delete player1;
+
+    for (int i = 0; i < enemies.size(); i++)
+    {
+        delete enemies[i];
+    }
+    enemies.clear();
+    for (int i = 0; i < gBases.size(); i++)
+    {
+        delete gBases[i];
+    }
+    gBases.clear();
+
+    for (int i = 0; i < arena_config->get_circles().size(); i++)
+    {
+
+        if (arena_config->get_circles()[i]->get_color() == "red")
+        {
+            enemie *e = new enemie(arena_config->get_circles()[i]);
+            e->set_foward(this->ground->get_centerx(), this->ground->get_centery(), 50);
+            e->fire_freq = arena_config->fire_frequency;
+            e->speed = arena_config->enemie_speed;
+            e->bullet_speed = arena_config->bullet_enemy_speed;
+            this->enemies.push_back(e);
+        }
+
+        if (arena_config->get_circles()[i]->get_color() == "orange")
+        {
+
+            this->gBases.push_back(new groundbase(arena_config->get_circles()[i]));
+        }
+
+        if (arena_config->get_circles()[i]->get_color() == "green")
+        {
+            this->player1 = new player(arena_config->get_circles()[i]);
+            this->player1->set_radius(this->player1->get_radius() * 2);
+            this->player1->set_foward(arena_config->get_lines()[0]->get_x2(), arena_config->get_lines()[0]->get_y2(), 8);
+            player1->bullet_speed = arena_config->bullet_player_speed;
+            player1->speed = arena_config->player_speed;
+        }
+    }
+
+    collision = false;
+    win = false;
+    kills_gbase = 0;
+    kills_plane = 0;
+}
+
+bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, double mouseX, double mouseY)
+{
+
+    char msg[50] = "";
+
+    if (collision)
+    {
+        if (key_status['r'] || key_status['R'])
+        {
+            reset();
+            key_status['u'] = false;
+        }
+
+        glLoadIdentity();
+        sprintf(msg, "VOCE PERDEU");
+        PrintText(0.4, 0.5, msg, 1, 0, 0);
+
+        sprintf(msg, "ESTATISTICAS");
+        PrintText(0.4, 0.4, msg, 1, 0, 0);
+
+        sprintf(msg, "Avioes Mortos %d", kills_plane);
+        PrintText(0.17, 0.3, msg, 1, 0, 0);
+
+        sprintf(msg, "Bases Destruidas %d", kills_gbase);
+        PrintText(0.57, 0.3, msg, 1, 0, 0);
+
+        return false;
+    }
+    else if (win)
+    {
+
+        if (key_status['r'] || key_status['R'])
+        {
+            reset();
+            key_status['u'] = false;
+        }
+
+        glLoadIdentity();
+        sprintf(msg, "           VOCE VENCEU");
+        PrintText(0.4, 0.5, msg, 1, 0, 0);
+
+        sprintf(msg, "PRESSIONE R PARA JOGAR NOVAMENTE");
+        PrintText(0.4, 0.3, msg, 1, 0, 0);
+
+        return false;
+    }
+
     double *player_pos = player1->get_position();
     double *player_fow = player1->get_foward();
 
-    glLoadIdentity();
-
     if (key_status['1'])
     {
-
+        glLoadIdentity();
         gluLookAt(player_pos[0] + 9 * player_fow[0], player_pos[1] + 9 * player_fow[1], player_pos[2] + 7,
                   player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
     }
@@ -178,11 +276,13 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     }
     else if (key_status['3'])
     {
+        glLoadIdentity();
         gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25,
                   player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
     }
 
     display_backgroud();
+
     this->ground->display(0, ground_texture, 1, 10);
 
     this->sky->display(player1->get_radius() * 9, sky_texture, -1, 1);
@@ -199,17 +299,15 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
     for (int i = 0; i < this->enemies.size(); i++)
     {
-        enemies[i]->random_move(elapsed_time);
+        if (key_status['u'])
+            enemies[i]->random_move(elapsed_time);
 
         if (dist2d(this->enemies[i]->get_position(), center) >= this->radius - 10)
             enemies[i]->teleport(this->ground);
 
         if (dist(player1->get_position(), enemies[i]->get_position()) < (player1->get_radius() + enemies[i]->get_radius()))
         {
-
-            cout << dist(player1->get_position(), enemies[i]->get_position()) << endl;
-
-            cout << "colisão" << endl;
+            collision = true;
         }
 
         vector<bullet *>::iterator it;
@@ -225,7 +323,7 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
             if (dist(player1->get_position(), enemies[i]->bullets[j]->get_position()) < (player1->get_radius()))
             {
 
-                cout << "Faleceu" << endl;
+                collision = true;
             }
         }
     }
@@ -245,8 +343,9 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
             if (dist(enemies[k]->get_position(), player1->bullets[j]->get_position()) < (enemies[k]->get_radius()))
             {
-
-                cout << "matou" << endl;
+                plane_ = true;
+                index = k;
+                kills_plane++;
             }
         }
     }
@@ -256,18 +355,18 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
         if (dist(player1->get_position(), gBases[i]->get_position()) < gBases[i]->get_radius() + player1->get_radius())
         {
 
-            cout << dist(player1->get_position(), gBases[i]->get_position()) << endl;
-
-            cout << "colisão gb" << endl;
+            collision = true;
         }
 
         if (player1->bomb_lauched())
         {
             if (dist(player1->get_bomb_position(), gBases[i]->get_position()) < gBases[i]->get_radius())
             {
-                cout << "acertou miseravel" << endl;
+                gbase_ = true;
+                index = i;
+                kills_gbase++;
+
                 player1->delete_bomb();
-                cout << "deleted" << endl;
             }
         }
     }
@@ -275,32 +374,33 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     if (key_status['u'])
     {
         player1->move(elapsed_time);
+
+        if (key_status['a'])
+        {
+            player1->left(elapsed_time);
+        }
+
+        else if (key_status['d'])
+        {
+            player1->right(elapsed_time);
+        }
+
+        if (key_status['w'])
+        {
+            player1->up();
+        }
+
+        else if (key_status['s'])
+        {
+            player1->down();
+        }
+
+        else
+        {
+            player1->foward_z_0();
+        }
     }
 
-    if (key_status['a'])
-    {
-        player1->left(elapsed_time);
-    }
-
-    else if (key_status['d'])
-    {
-        player1->right(elapsed_time);
-    }
-
-    if (key_status['w'])
-    {
-        player1->up();
-    }
-
-    else if (key_status['s'])
-    {
-        player1->down();
-    }
-
-    else
-    {
-        player1->foward_z_0();
-    }
     if (mouse_status[2])
     {
         camXYAngle += mouseX - lastX;
@@ -330,9 +430,7 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
         if (player1->get_bomb_position()[2] < 0)
         {
             player1->delete_bomb();
-            cout << "deleted" << endl;
         }
-        cout << "lancou" << endl;
     }
 
     for (int i = 0; i < this->gBases.size(); i++)
@@ -344,6 +442,47 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     {
         this->enemies[i]->display();
     }
+
+    if (gbase_)
+    {
+
+        vector<groundbase *>::iterator it;
+        it = gBases.begin();
+        it += index;
+
+        gBases.erase(it);
+
+        index = 0;
+        gbase_ = false;
+    }
+
+    if (plane_)
+    {
+
+        vector<enemie *>::iterator it;
+        it = enemies.begin();
+        it += index;
+
+        enemies.erase(it);
+
+        index = 0;
+        plane_ = false;
+    }
+
+    glLoadIdentity();
+
+    sprintf(msg, "Aviões Destruidos: %d", kills_plane);
+    PrintText(0.0, 0.69, msg, 1, 0, 0);
+    sprintf(msg, "Aviões Restantes: %d", (int)enemies.size());
+    PrintText(0.4, 0.69, msg, 1, 0, 0);
+    sprintf(msg, "Bases Destruidos: %d", kills_gbase);
+    PrintText(0.0, 0.67, msg, 1, 0, 0);
+    sprintf(msg, "Bases Restantes: %d", (int)gBases.size());
+    PrintText(0.4, 0.67, msg, 1, 0, 0);
+
+    if (gBases.size() == 0)
+        win = true;
+    return true;
 }
 
 void arena::display_bomb()

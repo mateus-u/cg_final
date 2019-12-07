@@ -160,7 +160,11 @@ void line::display(int text)
     double x_axys[3] = {1, 0, 0};
     double s = mag(vec);
 
-    glRotated(-angle_2_vector(vec, x_axys), 0, 0, 1);
+    if (vec[0] > 0 && vec[1] < 0)
+        glRotated(-angle_2_vector(vec, x_axys), 0, 0, 1);
+    else if (vec[0] < 0 && vec[1] > 0)
+        glRotated(angle_2_vector(vec, x_axys), 0, 0, 1);
+
     glScaled(s, 25, 1);
 
     glBegin(GL_POLYGON);

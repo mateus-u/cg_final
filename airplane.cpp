@@ -15,7 +15,6 @@ airplane::airplane(circle *cir)
     this->circ = cir;
     this->position[0] = this->circ->get_centerx();
     this->position[1] = this->circ->get_centery();
-    this->position[2] = 50;
     this->radius = this->circ->get_radius();
 
     Loader.LoadFile("model/plane.obj");
@@ -136,9 +135,9 @@ void airplane::display()
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
 
-    int a = 500;
+    int a = 450;
 
-    glScaled(this->circ->get_radius() / a, this->circ->get_radius() / a, this->circ->get_radius() / a);
+    glScaled(this->radius / a, this->radius / a, this->radius / a);
 
     load_obj();
 
@@ -240,6 +239,11 @@ void airplane::teleport(circle *ground)
 double airplane::get_radius()
 {
     return this->radius;
+}
+
+void airplane::set_radius(double r)
+{
+    this->radius = r;
 }
 
 void airplane::fire_bomb()

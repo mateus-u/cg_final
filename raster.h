@@ -4,12 +4,10 @@
 
 void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char *text, double r, double g, double b)
 {
-    //Push to recover original attributes
     glPushAttrib(GL_ENABLE_BIT);
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
-    //Draw text in the x, y, z position
-    glColor3f(0, 1, 0);
+    glColor3f(r, g, b);
     glRasterPos3f(x, y, z);
     const char *tmpStr;
     tmpStr = text;
@@ -23,9 +21,7 @@ void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char *text, double r, do
 
 void PrintText(GLfloat x, GLfloat y, const char *text, double r, double g, double b)
 {
-    //Draw text considering a 2D space (disable all 3d features)
     glMatrixMode(GL_PROJECTION);
-    //Push to recover original PROJECTION MATRIX
     glPushMatrix();
     glLoadIdentity();
     glOrtho(0, 1, 0, 1, -1, 1);

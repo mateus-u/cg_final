@@ -20,6 +20,7 @@ player::player(circle *cir) : airplane(cir)
     this->mat_shininess[0] = 50.0;
 
     this->position[2] = 8;
+
 }
 
 player::~player()

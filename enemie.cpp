@@ -20,7 +20,7 @@ enemie::enemie(circle *cir) : airplane(cir)
 
     this->mat_shininess[0] = 50.0;
 
-    this->position[2] = 100;
+    this->position[2] = 50;
 }
 
 enemie::~enemie()

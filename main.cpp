@@ -8,7 +8,7 @@
 #include "xml.h"
 #include "groundbase.h"
 #include "arena.h"
-#include "raster.h"
+
 
 /*Window*/
 int width = 500;
@@ -116,18 +116,19 @@ void display(void)
     gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 
-    game->display(key_status, mouse_status, elapsed, mouseX, mouseY);
+    if (game->display(key_status, mouse_status, elapsed, mouseX, mouseY))
+    {
 
-    glPushMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glViewport(0, 0, (GLsizei)w, view_h - 10);
-    gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
+        glPushMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glViewport(0, 0, (GLsizei)w, view_h - 10);
+        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+        glMatrixMode(GL_MODELVIEW);
+        glPopMatrix();
 
-    game->display_bomb();
-
+        game->display_bomb();
+    }
     glFlush();
 }
 

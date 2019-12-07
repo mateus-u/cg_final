@@ -48,6 +48,7 @@ public:
     ~airplane();
     void set_foward(double x, double y, double z);
     double get_radius();
+    void set_radius(double r);
     void display();
     void move(int elapsed_time);
     void left(int elapsed_time);
