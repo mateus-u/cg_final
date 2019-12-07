@@ -154,19 +154,19 @@ void display(void)
     view_h = 200.0 / 700.0 * h;
 
     glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glViewport(0, view_h, (GLsizei)w, (GLsizei)h);
-        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+    glLoadIdentity();
+    glViewport(0, view_h, (GLsizei)w, (GLsizei)h);
+    gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
     glMatrixMode(GL_MODELVIEW);
 
     game->display(key_status, mouse_status, elapsed);
 
     glPushMatrix();
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glViewport(0, 0, (GLsizei)w, view_h - 10);
-        gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
-        glMatrixMode(GL_MODELVIEW);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glViewport(0, 0, (GLsizei)w, view_h - 10);
+    gluPerspective(45, (GLfloat)w / (GLfloat)h, 1, 5000);
+    glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 
     game->display_bomb();
@@ -174,13 +174,32 @@ void display(void)
     glFlush();
 }
 
+void light_control()
+{
+
+    glEnable(GL_LIGHT0);
+
+    //glEnable(GL_LIGHT1);
+
+    GLfloat light_ambient[] = {1, 1, 1, 1.0};
+    GLfloat light_diffuse[] = {1.0, 1, 1, 1.0};
+    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat light_position[] = {500.0, 500.0, 500, 1.0};
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+
+}
 void init(char *namexml)
 {
     arq.readXML(namexml);
     arena_config = arq.readSVG();
     game = new arena(arena_config);
 
-    glClearColor(0.0, 0.1, 0.2, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
     glShadeModel(GL_SMOOTH);
 
     glEnable(GL_LIGHTING);
@@ -189,11 +208,7 @@ void init(char *namexml)
     glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LEQUAL);
 
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-
-    float l_p[4] = {500, 500, 50, 1};
-    glLightfv(GL_LIGHT1, GL_POSITION, l_p);
+    light_control();
 }
 void mouse(int button, int state, int x, int y)
 {

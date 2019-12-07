@@ -36,7 +36,6 @@ void airplane::load_obj()
         glPushMatrix();
 
         objl::Mesh curMesh = Loader.LoadedMeshes[i];
-        glBindTexture(GL_TEXTURE_2D, texture_plane);
 
         if (up_ && right_)
         {
@@ -112,6 +111,7 @@ void airplane::load_obj()
     }
 }
 
+
 void airplane::display()
 {
 
@@ -131,6 +131,7 @@ void airplane::display()
 
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, texture_plane);
 
     glTranslated(position[0], position[1], position[2]);
     //glutSolidSphere(20, 360, 360);
@@ -170,7 +171,8 @@ void airplane::move(int elapsed_time)
     position[1] += foward[1] * this->speed * time;
     position[2] += foward[2] * this->speed * time;
 
-    for (int i = 0; i < bullets.size(); i++){
+    for (int i = 0; i < bullets.size(); i++)
+    {
         bullets[i]->move(elapsed_time);
     }
 }

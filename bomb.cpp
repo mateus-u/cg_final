@@ -42,8 +42,8 @@ void bomb::display()
 
     glPushMatrix();
 
-    GLfloat materialEmission[] = {0.3, 0.2, 0.2, 1};
-    GLfloat materialColor[] = {0.0, 0.0, 0.0, 1};
+    GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1};
+    GLfloat materialColor[] = {0.5, 0.5, 0.5, 1};
     GLfloat mat_specular[] = {0.5, 0.5, 0.5, 1};
     GLfloat mat_shininess[] = {50.0};
 
@@ -54,7 +54,6 @@ void bomb::display()
 
     glTranslated(this->position[0], this->position[1], this->position[2]);
     glRotated(-theta_z, 0, 0, 1);
-    glScaled(3, 1, 1);
     glutSolidSphere(this->radius / 3, 360, 360);
 
     glPopMatrix();

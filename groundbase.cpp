@@ -73,9 +73,9 @@ void groundbase::load_obj()
 void groundbase::display()
 {
     glPushMatrix();
-    GLfloat materialEmission[] = {0.5, 0.5, 0.05, 1};
-    GLfloat materialColor[] = {0.3, 0.3, 0.3, 1};
-    GLfloat mat_specular[] = {0.9, 0.9, 0.9, 1};
+    GLfloat materialEmission[] = {0, 0, 0, 1};
+    GLfloat materialColor[] = {1, 1, 1, 1};
+    GLfloat mat_specular[] = {1, 1, 1, 1};
     GLfloat mat_shininess[] = {50.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, materialColor);

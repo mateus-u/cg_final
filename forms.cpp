@@ -82,10 +82,10 @@ void circle::display(double z, int text, int pos_normal)
     int i;
     GLfloat x, y;
 
-    GLfloat materialEmission[] = {0.4, 0.4, 0.4, 1};
-    GLfloat materialColorA[] = {0.0, 0.8, 0.0, 1};
-    GLfloat materialColorD[] = {0.0, 0.8, 0.0, 1};
-    GLfloat mat_specular[] = {0.9, 0.9, 0.9, 1};
+    GLfloat materialEmission[] = {0, 0, 0, 1};
+    GLfloat materialColorA[] = {1, 1, 1, 1};
+    GLfloat materialColorD[] = {1, 1, 1, 1};
+    GLfloat mat_specular[] = {1, 1, 1, 1};
     GLfloat mat_shininess[] = {100.0};
 
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
@@ -100,14 +100,14 @@ void circle::display(double z, int text, int pos_normal)
     glBindTexture(GL_TEXTURE_2D, text);
     glBegin(GL_POLYGON);
     
-    int t = 1;
+    double t = 1.3;
     
     for (i = 0; i < 360; i += 1)
     {
         x = cx + t * r * cos(M_PI * i / 180);
         y = cy + t * r * sin(M_PI * i / 180);
         glNormal3d(x, y, z + 2);
-        glTexCoord2d(x, y);
+        glTexCoord2d(10 * cos(M_PI * i / 180), 10 * sin(M_PI * i / 180));
         glVertex3f(x, y, z);
     }
     glEnd();

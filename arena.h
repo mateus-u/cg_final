@@ -24,6 +24,9 @@ private:
 
     double center[3];
     double radius;
+    double height;
+
+    void display_backgroud();
 
 public:
     arena(config *arena_config);

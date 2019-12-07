@@ -7,6 +7,7 @@ using namespace std;
 
 GLuint ground_texture = 0;
 GLuint sky_texture = 0;
+GLuint background_texture = 0;
 
 arena::arena(config *arena_config)
 {
@@ -50,10 +51,83 @@ arena::arena(config *arena_config)
 
     ground_texture = LoadTextureRAW("model/Grass.bmp");
     sky_texture = LoadTextureRAW("model/sky.bmp");
+    background_texture = LoadTextureRAW("model/back.bmp");
+
+    this->height = player1->get_radius() * 9;
 }
 
 arena::~arena()
 {
+}
+
+void arena::display_backgroud()
+{
+    int i;
+    GLfloat x, y;
+
+    GLfloat materialEmission[] = {0.3, 0.3, 1, 1};
+    GLfloat materialColorA[] = {0.2, 0.2, 1, 1};
+    GLfloat materialColorD[] = {0.2, 0.2, 1, 1};
+    GLfloat mat_specular[] = {0.2, 0.2, 1, 1};
+    GLfloat mat_shininess[] = {100.0};
+
+    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, background_texture);
+
+    glPushMatrix();
+
+    glTranslated(center[0], center[1], 0);
+    glRotated(90, 1, 0, 0);
+    // Number of segments a circle is divided into.
+    const unsigned DIV_COUNT = 4096;
+
+    // Calculate angle increment from point to point, and its cos/sin.
+    float angInc = 2.0f * M_PI / static_cast<float>(DIV_COUNT);
+    float cosInc = cos(angInc);
+    float sinInc = sin(angInc);
+
+    float texInc = 1.0f / static_cast<float>(DIV_COUNT);
+    float rad = radius * 1.3;
+    
+    // Draw cylinder.
+    glBegin(GL_TRIANGLE_STRIP);
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(rad, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(rad, height, 0.0f);
+
+    float xc = 1.0f;
+    float yc = 0.0f;
+    float texCoord = 0.0f;
+    for (unsigned iDiv = 1; iDiv < DIV_COUNT; ++iDiv)
+    {
+        float xcNew = cosInc * xc - sinInc * yc;
+        yc = sinInc * xc + cosInc * yc;
+        xc = xcNew;
+        texCoord += texInc;
+        glTexCoord2f(texCoord, 0.0f);
+        glVertex3f(rad * xc, 0.0f, rad * yc);
+        glTexCoord2f(texCoord, 1.0f);
+        glVertex3f(rad * xc, height, rad * yc);
+    }
+
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(rad, 0.0f, 0.0f);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(rad, height, 0.0f);
+
+    glEnd();
+
+    glPopMatrix();
 }
 
 double dist(double *p1, double *p2)
@@ -86,6 +160,7 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
     glLoadIdentity();
     gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25, player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
 
+    display_backgroud();
     this->ground->display(0, ground_texture, 1);
 
     this->sky->display(player1->get_radius() * 9, sky_texture, -1);
@@ -93,6 +168,7 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
     this->runway->display();
 
     this->player1->display();
+    this->player1->ligh_control();
 
     if (dist2d(player_pos, center) > this->radius)
     {
@@ -124,11 +200,11 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
             }
             it++;
 
-            if (dist(player1->get_position(), enemies[i]->bullets[j]->get_position()) < (player1->get_radius())){
+            if (dist(player1->get_position(), enemies[i]->bullets[j]->get_position()) < (player1->get_radius()))
+            {
 
                 cout << "Faleceu" << endl;
             }
-
         }
     }
 
@@ -142,9 +218,11 @@ void arena::display(bool *key_status, bool *mouse_status, int elapsed_time)
         }
         it++;
 
-        for (int k = 0; k < enemies.size(); k++){
+        for (int k = 0; k < enemies.size(); k++)
+        {
 
-            if(dist(enemies[k]->get_position(), player1->bullets[j]->get_position()) < (enemies[k]->get_radius())){
+            if (dist(enemies[k]->get_position(), player1->bullets[j]->get_position()) < (enemies[k]->get_radius()))
+            {
 
                 cout << "matou" << endl;
             }
