@@ -22,6 +22,13 @@ void rotate_z(double *vector, double angle)
     normalize(vector);
 }
 
+void rotate_z_no_normalize(double *vector, double angle)
+{
+    vector[0] = cos(angle) * vector[0] - sin(angle) * vector[1];
+    vector[1] = sin(angle) * vector[0] + cos(angle) * vector[1];
+    vector[2] = vector[2];
+}
+
 void rotate_y(double *vector, double angle)
 {
     vector[0] = cos(angle) * vector[0] + sin(angle) * vector[1];
@@ -66,4 +73,11 @@ double angle_2_vector(double *a, double *b)
     double PI = 3.14159265;
     angle = angle * 180.0 / PI;
     return angle;
+}
+
+double distan(double *a, double *b){
+
+    double c[3] = {a[0]-b[0], a[1]-b[1], a[2]- b[2]};
+
+    return mag(c);
 }

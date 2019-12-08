@@ -220,6 +220,10 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
     char msg[50] = "";
 
+    glLoadIdentity();
+    sprintf(msg, "FPS: %d", 1000 / elapsed_time);
+    PrintText(0.0, 0.0, msg, 0, 1, 0);
+
     if (collision)
     {
         if (key_status['r'] || key_status['R'])
@@ -254,10 +258,10 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
         glLoadIdentity();
         sprintf(msg, "           VOCE VENCEU");
-        PrintText(0.4, 0.5, msg, 1, 0, 0);
+        PrintText(0.4, 0.5, msg, 0, 1, 0);
 
         sprintf(msg, "PRESSIONE R PARA JOGAR NOVAMENTE");
-        PrintText(0.4, 0.3, msg, 1, 0, 0);
+        PrintText(0.4, 0.3, msg, 0, 1, 0);
 
         return false;
     }
@@ -302,7 +306,7 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
         if (key_status['u'])
             enemies[i]->random_move(elapsed_time);
 
-        if (dist2d(this->enemies[i]->get_position(), center) >= this->radius - 10)
+        if (dist2d(this->enemies[i]->get_position(), center) >= this->radius +15)
             enemies[i]->teleport(this->ground);
 
         if (dist(player1->get_position(), enemies[i]->get_position()) < (player1->get_radius() + enemies[i]->get_radius()))
@@ -401,6 +405,18 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
         }
     }
 
+    if (key_status['+'])
+    {
+        this->player1->speed += 0.3;
+        key_status['+'] = false;
+    }
+
+    if (key_status['-'])
+    {
+        this->player1->speed -= 0.3;
+        key_status['-'] = false;
+    }
+
     if (mouse_status[2])
     {
         camXYAngle += mouseX - lastX;
@@ -471,18 +487,26 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
     glLoadIdentity();
 
+    int r_ = 0;
+    int g_ = 1;
+    int b_ = 0;
+
     sprintf(msg, "Aviões Destruidos: %d", kills_plane);
-    PrintText(0.0, 0.69, msg, 1, 0, 0);
+    PrintText(0.0, 0.69, msg, r_, g_, b_);
     sprintf(msg, "Aviões Restantes: %d", (int)enemies.size());
-    PrintText(0.4, 0.69, msg, 1, 0, 0);
+    PrintText(0.4, 0.69, msg, r_, g_, b_);
     sprintf(msg, "Bases Destruidos: %d", kills_gbase);
-    PrintText(0.0, 0.67, msg, 1, 0, 0);
+    PrintText(0.0, 0.67, msg, r_, g_, b_);
     sprintf(msg, "Bases Restantes: %d", (int)gBases.size());
-    PrintText(0.4, 0.67, msg, 1, 0, 0);
+    PrintText(0.4, 0.67, msg, r_, g_, b_);
 
     if (gBases.size() == 0)
         win = true;
+    
+    collision = false;
+    
     return true;
+
 }
 
 void arena::display_bomb()

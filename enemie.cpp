@@ -42,7 +42,7 @@ void enemie::random_move(int elapsed_time)
 
     int f = rand() % 10;
 
-    if (cont > 30)
+    if (cont > 60)
     {
         i = rand() % 5;
         cont = 0;
@@ -59,6 +59,7 @@ void enemie::random_move(int elapsed_time)
     }
     else if (i == 3)
     {
+        if(this->position[0] < this->radius * 8);
         up();
     }
     else if (i == 4)

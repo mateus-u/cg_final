@@ -135,6 +135,8 @@ void airplane::display()
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
 
+    glutWireSphere(radius, 10, 10);
+
     int a = 450;
 
     glScaled(this->radius / a, this->radius / a, this->radius / a);
@@ -232,8 +234,45 @@ double *airplane::get_foward()
 
 void airplane::teleport(circle *ground)
 {
-    this->position[0] = ground->get_centerx();
-    this->position[1] = ground->get_centery();
+    double pos[3] = {position[0] - ground->get_centerx(), position[1] - ground->get_centery(), 0};
+
+    double x_axys[3] = {1, 0, 0};
+
+    double angle_x_f = 180 - 2 * angle_2_vector(foward, x_axys);
+    double angle_x_p = angle_2_vector(position, x_axys);
+
+    if (foward[1] < 0)
+    {
+        if (pos[1] > 0)
+        {
+            rotate_z_no_normalize(pos, angle_x_f);
+            rotate_z_no_normalize(pos, angle_x_p);
+        }
+        else
+        {
+            rotate_z_no_normalize(pos, angle_x_f);
+            rotate_z_no_normalize(pos, -angle_x_p);
+        }
+    }
+    else
+    {
+        if (pos[1] > 0)
+        {
+            rotate_z_no_normalize(pos, -angle_x_f);
+            rotate_z_no_normalize(pos, angle_x_p);
+        }
+        else
+        {
+            rotate_z_no_normalize(pos, -angle_x_f);
+            rotate_z_no_normalize(pos, -angle_x_p);
+        }
+    }
+
+    cout << angle_x_f << " " << angle_x_p << endl;
+
+    position[0] = foward[0] * 5 + pos[0] + ground->get_centerx();
+    position[1] = foward[1] * 5 + pos[1] + ground->get_centery();
+
 }
 
 double airplane::get_radius()

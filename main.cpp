@@ -9,7 +9,6 @@
 #include "groundbase.h"
 #include "arena.h"
 
-
 /*Window*/
 int width = 500;
 int height = 700;
@@ -48,6 +47,11 @@ void keyPress(unsigned char key, int x, int y)
 
     key_status[key] = true;
 
+    if (key == '+' || key == '-')
+    {
+        key_status[key] = false;
+    }
+
     if (key == 27)
         exit(0);
 
@@ -73,6 +77,11 @@ void keyUp(unsigned char key, int x, int y)
 
     if (key != 'u' && key != '1' && key != '2' && key != '3')
         key_status[key] = false;
+
+    if (key == '+' || key == '-')
+    {
+        key_status[key] = true;
+    }
 }
 
 void idle()
