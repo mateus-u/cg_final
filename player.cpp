@@ -21,6 +21,8 @@ player::player(circle *cir) : airplane(cir)
 
     this->position[2] = 8;
 
+    this->light = true;
+
 }
 
 player::~player()
@@ -37,22 +39,4 @@ void player::fire()
         b->speed = this->bullet_speed;
         bullets.push_back(b);
     }
-}
-
-void player::ligh_control()
-{
-
-    glPushMatrix();
-
-    GLfloat light_diffuse[] = {1.0, 0.0, 0.0, 1.0};
-    GLfloat light_specular[] = {1.0, 0.0, 0.0, 1.0};
-    GLfloat light_position[] = {0,0 ,0, -1};
-
-    glTranslated(position[0], position[1],position[2]);
-
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
-    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 45.0);
-
-    glPopMatrix();
 }

@@ -79,6 +79,8 @@ public:
 
     double cannon_foward[3] = {1, 1, 1};
     double cannon_angle = 0;
+
+    bool light = false;
 };
 
 #endif

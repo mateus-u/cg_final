@@ -54,7 +54,7 @@ float dot(double *a, double *b)
 
 float mag(double *a)
 {
-    return std::sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+    return sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
 }
 
 double angle_2_vector(double *a, double *b)
@@ -69,7 +69,7 @@ double angle_2_vector(double *a, double *b)
     v2[1] = b[1];
     v2[2] = 0;
 
-    double angle = std::acos(dot(v1, v2) / (mag(v1) * mag(v2)));
+    double angle = acos(dot(v1, v2) / (mag(v1) * mag(v2)));
     double PI = 3.14159265;
     angle = angle * 180.0 / PI;
     return angle;

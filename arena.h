@@ -50,6 +50,8 @@ private:
     bool plane_ = false;
     int index = 0;
 
+    bool textures = true;
+
     void draw(double x, double y, double z, double r, double g, double b);
 
 public:

@@ -14,13 +14,15 @@ enemie::enemie(circle *cir) : airplane(cir)
     this->materialColor[3] = 1.0;
 
     this->mat_specular[0] = 1.0;
-    this->mat_specular[1] = 0.0;
-    this->mat_specular[2] = 0.0;
+    this->mat_specular[1] = 0.2;
+    this->mat_specular[2] = 0.2;
     this->mat_specular[3] = 1.0;
 
     this->mat_shininess[0] = 50.0;
 
     this->position[2] = 50;
+
+    this->show_cannon = false;
 }
 
 enemie::~enemie()
@@ -40,7 +42,7 @@ void enemie::fire()
 void enemie::random_move(int elapsed_time)
 {
 
-    int f = rand() % 10;
+    int f = rand() % (int)(10 / this->fire_freq);
 
     if (cont > 60)
     {
@@ -68,7 +70,7 @@ void enemie::random_move(int elapsed_time)
         down();
     }
 
-    if (f == 1)
+    if (f == 0)
     {
         fire();
     }

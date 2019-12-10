@@ -114,8 +114,10 @@ void airplane::display()
 {
 
     double x_axys[3] = {1, 0, 0};
+    double y_axys[3] = {0, 1, 0};
+    double z_axys[3] = {0, 0, 1};
 
-    double cannonXY;
+    double cannonXY, cannonXZ;
 
     if (foward[1] < 0)
         theta_z = angle_2_vector(x_axys, this->foward);
@@ -126,6 +128,11 @@ void airplane::display()
         cannonXY = angle_2_vector(x_axys, this->cannon_foward);
     else
         cannonXY = 360 - angle_2_vector(x_axys, this->cannon_foward);
+
+    if (cannon_foward[2] < 0)
+        cannonXZ = angle_2_vector(z_axys, this->cannon_foward);
+    else
+        cannonXZ = 360 - angle_2_vector(z_axys, this->cannon_foward);
 
     glPushMatrix();
 
@@ -140,14 +147,25 @@ void airplane::display()
     glTranslated(position[0], position[1], position[2]);
     glRotated(-theta_z, 0, 0, 1);
 
-    if (show_cannon)
+    if (light)
     {
         glPushMatrix();
 
-        glRotated(-cannonXY + theta_z, 0, 0, 1);
-        glTranslated(radius * 4, 0, 0);
-        glutSolidSphere(2, 360, 360);
+        float l_pos[] = {0, 0, 0, 1};
+        float l_dir[] = {1, 0, 0, 1};
+        float s_cut[] = {45};
+        glLightfv(GL_LIGHT1, GL_POSITION, l_pos);
+        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, l_dir);
+        glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, s_cut);
 
+        glPopMatrix();
+    }
+    if (show_cannon)
+    {
+        glPushMatrix();
+        glRotated(-cannonXY + theta_z, 0, 0, 1);
+        glTranslated(radius * 2.5, 0, 0);
+        glutSolidSphere(1, 360, 360);
         glPopMatrix();
     }
 
@@ -159,7 +177,6 @@ void airplane::display()
     int a = 450;
 
     glScaled(this->radius / a, this->radius / a, this->radius / a);
-
     load_obj();
 
     glPopMatrix();
@@ -307,8 +324,20 @@ void airplane::teleport(circle *ground)
     pos[0] = cos((angle * PI) / 180.0) * x - sin((angle * PI) / 180.0) * y;
     pos[1] = sin((angle * PI) / 180.0) * x + cos((angle * PI) / 180.0) * y;
 
-    position[0] = pos[0] + ground->get_centerx() + 10 * foward[0];
-    position[1] = pos[1] + ground->get_centery() + 10 * foward[1];
+    double center[] = {ground->get_centerx(), ground->get_centery(), position[2]};
+    
+    double vec[] = {position[0] - center[0], position[1] - center[1], position[2] - center[2]};
+
+    normalize(vec);
+    
+    position[0] = pos[0] + ground->get_centerx() + 10 * vec[0];
+    position[1] = pos[1] + ground->get_centery() + 10 * vec[1];
+
+    if (distan(position, center) > ground->get_radius() + 20)
+    {
+        position[0] = center[0];
+        position[1] = center[1];
+    }
 }
 
 double airplane::get_radius()

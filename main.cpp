@@ -45,6 +45,12 @@ double mouseY = 0;
 void keyPress(unsigned char key, int x, int y)
 {
 
+    if (key == 'n')
+    {
+        key_status['n'] = !key_status['n'];
+        return;
+    }
+
     key_status[key] = true;
 
     if (key == '+' || key == '-')
@@ -59,23 +65,32 @@ void keyPress(unsigned char key, int x, int y)
     {
         key_status['2'] = false;
         key_status['3'] = false;
+        key_status['4'] = false;
     }
     if (key == '2')
     {
         key_status['1'] = false;
         key_status['3'] = false;
+        key_status['4'] = false;
     }
     if (key == '3')
     {
         key_status['1'] = false;
         key_status['2'] = false;
+        key_status['4'] = false;
+    }
+    if (key == '4')
+    {
+        key_status['1'] = false;
+        key_status['2'] = false;
+        key_status['3'] = false;
     }
 }
 
 void keyUp(unsigned char key, int x, int y)
 {
 
-    if (key != 'u' && key != '1' && key != '2' && key != '3')
+    if (key != 'u' && key != '1' && key != '2' && key != '3' && key != '4' && key != 'n')
         key_status[key] = false;
 
     if (key == '+' || key == '-')
@@ -138,25 +153,42 @@ void display(void)
 
         game->display_bomb();
     }
+
+    if (key_status['n'])
+    {
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+    }
+    if (!key_status['n'])
+    {
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+    }
     glFlush();
 }
 
 void light_control()
 {
 
-    glEnable(GL_LIGHT0);
-
-    //glEnable(GL_LIGHT1);
-
     GLfloat light_ambient[] = {1, 1, 1, 1.0};
     GLfloat light_diffuse[] = {1.0, 1, 1, 1.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {500.0, 500.0, 500, 1.0};
+    GLfloat light_position[] = {0.0, 0.0, 0, 0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+    GLfloat l_light_ambient[] = {0, 0, 1, 1.0};
+    GLfloat l_light_diffuse[] = {0, 0, 1, 1.0};
+    GLfloat l_light_specular[] = {0, 0, 1, 1.0};
+
+    glLightfv(GL_LIGHT1, GL_AMBIENT, l_light_ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, l_light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, l_light_specular);
+
+    glEnable(GL_LIGHT1);
 }
 void init(char *namexml)
 {
@@ -175,7 +207,8 @@ void init(char *namexml)
 
     light_control();
 
-    key_status['1'] = true;
+    key_status['4'] = true;
+    key_status['n'] = true;
 }
 void mouse(int button, int state, int x, int y)
 {
@@ -213,8 +246,6 @@ void mouse_motion(int x, int y)
 {
     mouseY = y;
     mouseX = x;
-
-
 }
 
 int main(int argc, char **argv)

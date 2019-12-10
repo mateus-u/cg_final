@@ -9,8 +9,6 @@ private:
 public:
     player(circle* cir);
     ~player();
-
-    void ligh_control();
     void fire();
     
 };

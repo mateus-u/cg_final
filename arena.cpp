@@ -223,7 +223,7 @@ void display_circunference(double r, double R, double G, double B)
 }
 void arena::draw(double x, double y, double z, double r, double g, double b)
 {
-    glTranslated(-0.75, -0.75, 0);
+    glTranslated(0.75, -0.75, 0);
     glScaled(1.0 / 4.0, 1.0 / 4.0, 1);
 
     display_circunference(1, 0, 0, 0);
@@ -339,6 +339,7 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 {
     char msg[50] = "";
     double x_axys[3] = {1, 0, 0};
+    double PI = 3.141592653589793238462643383279502884197169399375105820974944;
 
     sprintf(msg, "FPS: %d", 1000 / elapsed_time);
     PrintText(0.0, 0.0, msg, 0, 1, 0);
@@ -397,17 +398,40 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     else if (key_status['2'])
     {
         glLoadIdentity();
-        gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25,
-                  player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
+        gluLookAt(player_pos[0] + 25 * player_fow[0], player_pos[1] + 25 * player_fow[1], player_pos[2] + 3,
+                  player_pos[0] + 150 * player1->cannon_foward[0], player_pos[1] + 150 * player1->cannon_foward[1], player_pos[2] + 1 * player1->cannon_foward[2], 0, 0, 1);
     }
     else if (key_status['3'])
     {
         glLoadIdentity();
-        gluLookAt(player_pos[0] - 90 * f[0], player_pos[1] - 90 * f[1], player_pos[2] + 90 * f[2],
+        gluLookAt(player_pos[0] - player1->get_radius() * 5 * f[0], player_pos[1] - player1->get_radius() * 5 * f[1], player_pos[2] + player1->get_radius() * 5 * f[2],
+                  player_pos[0], player_pos[1], player_pos[2], 0, 0, 1);
+    }
+
+    else if (key_status['4'])
+    {
+        glLoadIdentity();
+        gluLookAt(player_pos[0] - player1->get_radius() * 4 * player_fow[0], player_pos[1] - player1->get_radius() * 4 * player_fow[1], player_pos[2] + 10,
                   player_pos[0], player_pos[1], player_pos[2], 0, 0, 1);
     }
 
     /**/
+
+    /**/
+
+    player1->cannon_foward[0] = player1->get_foward()[0];
+    player1->cannon_foward[1] = player1->get_foward()[1];
+    player1->cannon_foward[2] = player1->get_foward()[2];
+
+    angleXY += (lastX - mouseX) / 10;
+
+    if (angleXY > 30)
+        angleXY = 29;
+    if (angleXY < -30)
+        angleXY = -29;
+
+    player1->cannon_foward[0] = cos((angleXY * PI) / 180.0) * player1->cannon_foward[0] - sin((angleXY * PI) / 180.0) * player1->cannon_foward[1];
+    player1->cannon_foward[1] = sin((angleXY * PI) / 180.0) * player1->cannon_foward[0] + cos((angleXY * PI) / 180.0) * player1->cannon_foward[1];
 
     /**/
 
@@ -420,7 +444,6 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     this->runway->display(way_texture);
 
     this->player1->display();
-    this->player1->ligh_control();
 
     if (dist2d(player_pos, center) > this->radius)
     {
@@ -541,11 +564,41 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     {
         if (player1->speed >= 0)
             this->player1->speed -= 0.3;
+
         key_status['-'] = false;
     }
 
-    if (mouse_status[2])
+    if (player1->speed < 0)
+        this->player1->speed = 0.0;
+
+    f[0] = player_fow[0];
+    f[1] = player_fow[1];
+    f[2] = player_fow[2];
+
+    if (key_status[' '])
     {
+
+        camXYAngle += (lastX - mouseX) / 10;
+
+        if (camXYAngle > 90)
+            camXYAngle = 90;
+        if (camXYAngle < -90)
+            camXYAngle = -90;
+
+        f[0] = cos((camXZAngle * PI) / 180.0) * f[0] - sin((camXYAngle * PI) / 180.0) * f[1];
+        f[1] = sin((camXYAngle * PI) / 180.0) * f[0] + cos((camXYAngle * PI) / 180.0) * f[1];
+
+        camXZAngle += (lastY - mouseY) / 10;
+
+        if (camXZAngle > 60)
+            camXZAngle = 60;
+        if (camXZAngle < -60)
+            camXZAngle = -60;
+
+        f[0] = cos((camXZAngle * PI) / 180.0) * f[0] + sin((camXZAngle * PI) / 180.0) * f[2];
+        f[2] = -sin((camXZAngle * PI) / 180.0) * f[0] + cos((camXZAngle * PI) / 180.0) * f[2];
+
+        cout << camXYAngle << endl;
     }
 
     if (mouse_status[1])
@@ -611,9 +664,9 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     int g_ = 1;
     int b_ = 0;
 
-    sprintf(msg, "Aviões Destruidos: %d", kills_plane);
+    sprintf(msg, "Avioes Destruidos: %d", kills_plane);
     PrintText(0.0, 0.69, msg, r_, g_, b_);
-    sprintf(msg, "Aviões Restantes: %d", (int)enemies.size());
+    sprintf(msg, "Avioes Restantes: %d", (int)enemies.size());
     PrintText(0.4, 0.69, msg, r_, g_, b_);
     sprintf(msg, "Bases Destruidos: %d", kills_gbase);
     PrintText(0.0, 0.67, msg, r_, g_, b_);
@@ -623,9 +676,10 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     if (gBases.size() == 0)
         win = true;
 
-    collision = false;
-
     this->display_map();
+
+    lastX = mouseX;
+    lastY = mouseY;
 
     return true;
 }

@@ -25,6 +25,7 @@ void bullet::move(int elapsed_time)
 
     this->position[0] += this->foward[0] * this->speed * time;
     this->position[1] += this->foward[1] * this->speed * time;
+    this->position[1] += this->foward[2] * this->speed * time;
 }
 
 void bullet::display()
