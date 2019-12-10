@@ -31,7 +31,7 @@ void enemie::fire()
 
     if (bullets.size() < 5)
     {
-        bullet *b = new bullet(position, foward);
+        bullet *b = new bullet(position, cannon_foward);
         b->set_enemie(true);
         b->speed = this->bullet_speed;
         bullets.push_back(b);

@@ -175,7 +175,7 @@ void init(char *namexml)
 
     light_control();
 
-    key_status['3'] = true;
+    key_status['1'] = true;
 }
 void mouse(int button, int state, int x, int y)
 {
@@ -213,6 +213,8 @@ void mouse_motion(int x, int y)
 {
     mouseY = y;
     mouseX = x;
+
+
 }
 
 int main(int argc, char **argv)
@@ -234,7 +236,8 @@ int main(int argc, char **argv)
     glutKeyboardUpFunc(keyUp);
     glutReshapeFunc(reshape);
     glutMouseFunc(mouse);
-    glutMotionFunc(mouse_motion);
+    //glutMotionFunc(mouse_motion);
+    glutPassiveMotionFunc(mouse_motion);
     /*CallBack*/
 
     glutMainLoop();

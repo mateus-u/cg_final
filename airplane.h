@@ -43,6 +43,8 @@ protected:
     bool left_ = false;
     bool right_ = false;
 
+    bool show_cannon = true;
+
 public:
     airplane(circle *cir);
     ~airplane();
@@ -74,6 +76,9 @@ public:
 
     double speed = 1;
     double bullet_speed = 1;
+
+    double cannon_foward[3] = {1, 1, 1};
+    double cannon_angle = 0;
 };
 
 #endif

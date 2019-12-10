@@ -115,10 +115,17 @@ void airplane::display()
 
     double x_axys[3] = {1, 0, 0};
 
+    double cannonXY;
+
     if (foward[1] < 0)
         theta_z = angle_2_vector(x_axys, this->foward);
     else
         theta_z = 360 - angle_2_vector(x_axys, this->foward);
+
+    if (cannon_foward[1] < 0)
+        cannonXY = angle_2_vector(x_axys, this->cannon_foward);
+    else
+        cannonXY = 360 - angle_2_vector(x_axys, this->cannon_foward);
 
     glPushMatrix();
 
@@ -132,10 +139,22 @@ void airplane::display()
     glBindTexture(GL_TEXTURE_2D, texture_plane);
     glTranslated(position[0], position[1], position[2]);
     glRotated(-theta_z, 0, 0, 1);
+
+    if (show_cannon)
+    {
+        glPushMatrix();
+
+        glRotated(-cannonXY + theta_z, 0, 0, 1);
+        glTranslated(radius * 4, 0, 0);
+        glutSolidSphere(2, 360, 360);
+
+        glPopMatrix();
+    }
+
     glRotated(90, 0, 1, 0);
     glRotated(90, 0, 0, 1);
 
-    glutWireSphere(radius, 10, 10);
+    //glutWireSphere(radius, 10, 10);
 
     int a = 450;
 
@@ -174,7 +193,7 @@ void airplane::left(int elapsed_time)
 {
     double angle = elapsed_time * speed / 1000;
     rotate_z(foward, angle);
-
+    rotate_z(cannon_foward, angle);
     left_ = true;
 }
 
@@ -182,7 +201,7 @@ void airplane::right(int elapsed_time)
 {
     double angle = elapsed_time * speed / 1000;
     rotate_z(foward, -angle);
-
+    rotate_z(cannon_foward, -angle);
     right_ = true;
 }
 
@@ -220,6 +239,10 @@ void airplane::set_foward(double x, double y, double z)
     this->foward[1] = y - position[1];
     this->foward[2] = z - position[2];
     normalize(foward);
+
+    this->cannon_foward[0] = this->foward[0];
+    this->cannon_foward[1] = this->foward[1];
+    this->cannon_foward[2] = this->foward[2];
 }
 
 double *airplane::get_position()
@@ -235,44 +258,57 @@ double *airplane::get_foward()
 void airplane::teleport(circle *ground)
 {
     double pos[3] = {position[0] - ground->get_centerx(), position[1] - ground->get_centery(), 0};
-
     double x_axys[3] = {1, 0, 0};
 
-    double angle_x_f = 180 - 2 * angle_2_vector(foward, x_axys);
-    double angle_x_p = angle_2_vector(position, x_axys);
+    double PI = 3.141592653589793238462643383279502884197169399375105820974944;
 
-    if (foward[1] < 0)
+    double x = pos[0];
+    double y = pos[1];
+
+    double angle = 0;
+
+    angle = 180 - 2 * angle_2_vector(pos, foward);
+
+    if (angle_2_vector(pos, x_axys) - angle_2_vector(foward, x_axys) < 0.5)
+        angle = 180;
+
+    else if (pos[0] > 0 && pos[1] > 0)
     {
-        if (pos[1] > 0)
+
+        if (angle_2_vector(pos, x_axys) < angle_2_vector(foward, x_axys))
         {
-            rotate_z_no_normalize(pos, angle_x_f);
-            rotate_z_no_normalize(pos, angle_x_p);
-        }
-        else
-        {
-            rotate_z_no_normalize(pos, angle_x_f);
-            rotate_z_no_normalize(pos, -angle_x_p);
+            angle = -angle;
         }
     }
-    else
+    else if (pos[0] < 0 && pos[1] > 0)
     {
-        if (pos[1] > 0)
+
+        if (angle_2_vector(pos, x_axys) < angle_2_vector(foward, x_axys))
         {
-            rotate_z_no_normalize(pos, -angle_x_f);
-            rotate_z_no_normalize(pos, angle_x_p);
+            angle = -angle;
         }
-        else
+    }
+    else if (pos[0] < 0 && pos[1] < 0)
+    {
+
+        if (angle_2_vector(pos, x_axys) > angle_2_vector(foward, x_axys))
         {
-            rotate_z_no_normalize(pos, -angle_x_f);
-            rotate_z_no_normalize(pos, -angle_x_p);
+            angle = -angle;
+        }
+    }
+    else if (pos[0] > 0 && pos[1] < 0)
+    {
+        if (angle_2_vector(pos, x_axys) > angle_2_vector(foward, x_axys))
+        {
+            angle = -angle;
         }
     }
 
-    cout << angle_x_f << " " << angle_x_p << endl;
+    pos[0] = cos((angle * PI) / 180.0) * x - sin((angle * PI) / 180.0) * y;
+    pos[1] = sin((angle * PI) / 180.0) * x + cos((angle * PI) / 180.0) * y;
 
-    position[0] = foward[0] * 5 + pos[0] + ground->get_centerx();
-    position[1] = foward[1] * 5 + pos[1] + ground->get_centery();
-
+    position[0] = pos[0] + ground->get_centerx() + 10 * foward[0];
+    position[1] = pos[1] + ground->get_centery() + 10 * foward[1];
 }
 
 double airplane::get_radius()

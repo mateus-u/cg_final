@@ -1,6 +1,7 @@
 #include "arena.h"
 #include "math.h"
 #include "raster.h"
+#include "matrix.h"
 #include "loadTexture.h"
 #include <iostream>
 
@@ -165,6 +166,125 @@ double dist2d(double *p1, double *p2)
     return sqrt(p[0] * p[0] + p[1] * p[1]);
 }
 
+void display_circle(double r, double R, double G, double B)
+{
+
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(R, G, B);
+
+    int i;
+
+    double x_;
+    double y_;
+    glBegin(GL_POLYGON);
+
+    for (i = 0; i < 360; i += 2)
+    {
+        x_ = r * cos(M_PI * i / 180);
+        y_ = r * sin(M_PI * i / 180);
+        glVertex3f(x_, y_, 0);
+    }
+    glEnd();
+
+    /**/
+
+    glPopAttrib();
+}
+
+void display_circunference(double r, double R, double G, double B)
+{
+
+    glPushAttrib(GL_ENABLE_BIT);
+    glDisable(GL_LIGHTING);
+    glDisable(GL_TEXTURE_2D);
+    glColor3f(R, G, B);
+
+    glLineWidth(5);
+
+    int i;
+
+    double x_;
+    double y_;
+    glBegin(GL_LINE_LOOP);
+
+    for (i = 0; i < 360; i += 2)
+    {
+        x_ = r * cos(M_PI * i / 180);
+        y_ = r * sin(M_PI * i / 180);
+        glVertex3f(x_, y_, 0);
+    }
+    glEnd();
+
+    /**/
+
+    glPopAttrib();
+}
+void arena::draw(double x, double y, double z, double r, double g, double b)
+{
+    glTranslated(-0.75, -0.75, 0);
+    glScaled(1.0 / 4.0, 1.0 / 4.0, 1);
+
+    display_circunference(1, 0, 0, 0);
+
+    glPushMatrix();
+
+    double pos[2] = {(player1->get_position()[0] - this->ground->get_centerx()) / radius, (player1->get_position()[1] - this->ground->get_centery()) / radius};
+    glTranslated(pos[0], pos[1], 0);
+    display_circle(0.10, 0, 1, 0);
+
+    glPopMatrix();
+
+    for (int i = 0; i < enemies.size(); i++)
+    {
+        glPushMatrix();
+        double posi[2] = {(enemies[i]->get_position()[0] - this->ground->get_centerx()) / radius, (enemies[i]->get_position()[1] - this->ground->get_centery()) / radius};
+        glTranslated(posi[0], posi[1], 0);
+        display_circle(0.10, 1, 0, 0);
+        glPopMatrix();
+    }
+
+    for (int i = 0; i < gBases.size(); i++)
+    {
+        glPushMatrix();
+        double posi[2] = {(gBases[i]->get_position()[0] - this->ground->get_centerx()) / radius, (gBases[i]->get_position()[1] - this->ground->get_centery()) / radius};
+        glTranslated(posi[0], posi[1], 0);
+        display_circle(0.10, 1, 3.34, 0);
+        glPopMatrix();
+    }
+
+    if (player1->bomb_lauched())
+    {
+
+        glPushMatrix();
+        double posi[2] = {(player1->get_bomb_position()[0] - this->ground->get_centerx()) / radius, (player1->get_bomb_position()[1] - this->ground->get_centery()) / radius};
+        glTranslated(posi[0], posi[1], 0);
+        display_circle(0.05, 0, 0, 1);
+        glPopMatrix();
+    }
+}
+
+void arena::display_map()
+{
+    double x = 0.15;
+    double y = 0.15;
+    double r = 1;
+    double g = 1;
+    double b = 1;
+
+    double h = glutGet(GLUT_WINDOW_HEIGHT);
+    double w = glutGet(GLUT_WINDOW_WIDTH);
+
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1);
+    draw(x, y, 0, r, g, b);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
 void arena::reset()
 {
     delete player1;
@@ -217,10 +337,9 @@ void arena::reset()
 
 bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, double mouseX, double mouseY)
 {
-
     char msg[50] = "";
+    double x_axys[3] = {1, 0, 0};
 
-    glLoadIdentity();
     sprintf(msg, "FPS: %d", 1000 / elapsed_time);
     PrintText(0.0, 0.0, msg, 0, 1, 0);
 
@@ -277,13 +396,20 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     }
     else if (key_status['2'])
     {
-    }
-    else if (key_status['3'])
-    {
         glLoadIdentity();
         gluLookAt(player_pos[0] - 90 * player_fow[0], player_pos[1] - 90 * player_fow[1], player_pos[2] + 25,
                   player_pos[0] + 150 * player_fow[0], player_pos[1] + 150 * player_fow[1], player_pos[2] + 1 * player_fow[2], 0, 0, 1);
     }
+    else if (key_status['3'])
+    {
+        glLoadIdentity();
+        gluLookAt(player_pos[0] - 90 * f[0], player_pos[1] - 90 * f[1], player_pos[2] + 90 * f[2],
+                  player_pos[0], player_pos[1], player_pos[2], 0, 0, 1);
+    }
+
+    /**/
+
+    /**/
 
     display_backgroud();
 
@@ -306,7 +432,7 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
         if (key_status['u'])
             enemies[i]->random_move(elapsed_time);
 
-        if (dist2d(this->enemies[i]->get_position(), center) >= this->radius +15)
+        if (dist2d(this->enemies[i]->get_position(), center) >= this->radius + 15)
             enemies[i]->teleport(this->ground);
 
         if (dist(player1->get_position(), enemies[i]->get_position()) < (player1->get_radius() + enemies[i]->get_radius()))
@@ -413,21 +539,15 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
     if (key_status['-'])
     {
-        this->player1->speed -= 0.3;
+        if (player1->speed >= 0)
+            this->player1->speed -= 0.3;
         key_status['-'] = false;
     }
 
     if (mouse_status[2])
     {
-        camXYAngle += mouseX - lastX;
-        camXZAngle += mouseY - lastY;
-
-        camXYAngle = (int)camXYAngle % 360;
-        camXZAngle = (int)camXZAngle % 360;
-
-        lastX = mouseX;
-        lastY = mouseY;
     }
+
     if (mouse_status[1])
     {
         if (!player1->bomb_lauched())
@@ -502,11 +622,12 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
     if (gBases.size() == 0)
         win = true;
-    
-    collision = false;
-    
-    return true;
 
+    collision = false;
+
+    this->display_map();
+
+    return true;
 }
 
 void arena::display_bomb()
@@ -532,6 +653,7 @@ void arena::display_bomb()
             this->enemies[i]->display();
         }
 
+        glLoadIdentity();
         player1->display_bomb();
     }
 }
