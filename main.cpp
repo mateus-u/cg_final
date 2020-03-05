@@ -164,7 +164,7 @@ void display(void)
         glDisable(GL_LIGHT0);
         glEnable(GL_LIGHT1);
     }
-    glFlush();
+    glutSwapBuffers();
 }
 
 void light_control()
@@ -251,7 +251,7 @@ void mouse_motion(int x, int y)
 int main(int argc, char **argv)
 {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Trabalho Final");

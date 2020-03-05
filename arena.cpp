@@ -341,9 +341,6 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
     double x_axys[3] = {1, 0, 0};
     double PI = 3.141592653589793238462643383279502884197169399375105820974944;
 
-    sprintf(msg, "FPS: %d", 1000 / elapsed_time);
-    PrintText(0.0, 0.0, msg, 0, 1, 0);
-
     if (collision)
     {
         if (key_status['r'] || key_status['R'])
@@ -385,6 +382,9 @@ bool arena::display(bool *key_status, bool *mouse_status, int elapsed_time, doub
 
         return false;
     }
+
+    sprintf(msg, "FPS: %d", 1000 / elapsed_time);
+    PrintText(0.0, 0.0, msg, 0, 1, 0);
 
     double *player_pos = player1->get_position();
     double *player_fow = player1->get_foward();
